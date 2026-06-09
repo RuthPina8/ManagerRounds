@@ -1,0 +1,325 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.Master.cs" Inherits="ManagerRounds.Site" %>
+<!DOCTYPE html>
+<html>
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manager Rounds · Astemo</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+
+    <style>
+        :root {
+            --astemo-red: #CC0000;
+            --sidebar-width: 240px;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 14px;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* ===== TOPBAR ===== */
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 1000;
+            border-bottom: 3px solid var(--astemo-red);
+        }
+
+        .topbar-brand {
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .topbar-brand span {
+            color: var(--astemo-red);
+        }
+
+        .topbar-user {
+            color: #ccc;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .topbar-user a {
+            color: #ccc;
+            text-decoration: none;
+        }
+
+        .topbar-user a:hover {
+            color: #fff;
+        }
+
+        .topbar-user .divider {
+            color: #555;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            position: fixed;
+            top: 50px;
+            left: 0;
+            width: var(--sidebar-width);
+            height: calc(100vh - 50px);
+            background: #fff;
+            border-right: 1px solid #e0e0e0;
+            overflow-y: auto;
+            z-index: 999;
+        }
+
+        .sidebar-section {
+            padding: 16px 16px 4px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 16px;
+            color: #444;
+            text-decoration: none;
+            font-size: 13px;
+            transition: background 0.15s;
+            cursor: pointer;
+        }
+
+        .sidebar-item:hover {
+            background: #f4f6f8;
+            color: #222;
+            text-decoration: none;
+        }
+
+        .sidebar-item.active {
+            background: #fdeaea;
+            color: var(--astemo-red);
+            font-weight: 500;
+            border-right: 3px solid var(--astemo-red);
+        }
+
+        .sidebar-item i {
+            width: 18px;
+            text-align: center;
+            font-size: 14px;
+            color: #888;
+        }
+
+        .sidebar-item.active i {
+            color: var(--astemo-red);
+        }
+
+        /* Submenú desplegable */
+        .sidebar-submenu {
+            display: none;
+            background: #fafafa;
+        }
+
+        .sidebar-submenu.open {
+            display: block;
+        }
+
+        .sidebar-submenu .sidebar-item {
+            padding-left: 44px;
+            font-size: 12px;
+        }
+
+        .sidebar-toggle {
+            margin-left: auto;
+            font-size: 11px;
+            color: #bbb;
+            transition: transform 0.2s;
+        }
+
+        .sidebar-toggle.open {
+            transform: rotate(180deg);
+        }
+
+        /* Logo Astemo abajo */
+        .sidebar-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 16px;
+            border-top: 1px solid #f0f0f0;
+            text-align: center;
+        }
+
+        .sidebar-footer p {
+            font-size: 11px;
+            color: #bbb;
+            margin: 4px 0 0;
+        }
+
+        /* ===== CONTENIDO PRINCIPAL ===== */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            margin-top: 50px;
+            padding: 24px;
+            min-height: calc(100vh - 50px);
+        }
+
+        /* ===== TARJETAS ===== */
+        .card-mr {
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card-mr-header {
+            border-top: 4px solid var(--astemo-red);
+            border-radius: 8px 8px 0 0;
+            background: #fff;
+            padding: 16px 20px;
+            border-left: 1px solid #e8e8e8;
+            border-right: 1px solid #e8e8e8;
+            margin-bottom: 0;
+        }
+
+        /* ===== BADGES ===== */
+        .badge-cumple { background: #EAF3DE; color: #3B6D11; }
+        .badge-nocumple { background: #FCEBEB; color: #A32D2D; }
+        .badge-na { background: #f0f0f0; color: #666; }
+        .badge-pendiente { background: #FCEBEB; color: #A32D2D; }
+        .badge-revisado { background: #EEEDFE; color: #534AB7; }
+        .badge-rechazado { background: #FAEEDA; color: #854F0B; }
+        .badge-corregido { background: #EAF3DE; color: #3B6D11; }
+        .badge-activo { background: #EAF3DE; color: #3B6D11; }
+        .badge-inactivo { background: #FCEBEB; color: #A32D2D; }
+
+        /* ===== BOTÓN PRIMARIO ===== */
+        .btn-astemo {
+            background: var(--astemo-red);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 18px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .btn-astemo:hover {
+            background: #aa0000;
+            color: #fff;
+        }
+    </style>
+
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <div class="topbar-brand">MANAGER <span>ROUNDS</span></div>
+        <div class="topbar-user">
+            <span><i class="fas fa-user-circle"></i> <%= Session["nombreUsuario"] %></span>
+            <span class="divider">|</span>
+            <a href="/Account/Login.aspx">Salir</a>
+        </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+        <div class="sidebar-section">Recorridos</div>
+
+        <a class="sidebar-item" href="/formulario/Default.aspx">
+            <i class="fas fa-clipboard-list"></i> Formulario del día
+        </a>
+
+        <a class="sidebar-item" href="/dashboard/Default.aspx">
+            <i class="fas fa-chart-bar"></i> Dashboard
+        </a>
+
+        <a class="sidebar-item" href="/historial/Default.aspx">
+            <i class="fas fa-history"></i> Historial
+        </a>
+
+        <!-- Solo visible para Revisor -->
+        <% if (Session["rol"] != null && Session["rol"].ToString() == "Revisor") { %>
+
+        <div class="sidebar-section">Administración</div>
+
+        <div class="sidebar-item" onclick="toggleMenu('menuAdmin')">
+            <i class="fas fa-cog"></i> Configuración
+            <i class="fas fa-chevron-down sidebar-toggle" id="iconAdmin"></i>
+        </div>
+        <div class="sidebar-submenu" id="menuAdmin">
+            <a class="sidebar-item" href="/admin/Usuarios.aspx">
+                <i class="fas fa-users"></i> Usuarios
+            </a>
+            <a class="sidebar-item" href="/admin/Preguntas.aspx">
+                <i class="fas fa-question-circle"></i> Preguntas
+            </a>
+        </div>
+
+        <% } %>
+
+        <div class="sidebar-footer">
+            <img src="/Content/astemo-logo.png" alt="Astemo" style="height:28px;" onerror="this.style.display='none'" />
+            <p>Mobility Beyond · MXQRP1</p>
+        </div>
+    </div>
+
+    <!-- CONTENIDO -->
+    <div class="main-content">
+        <form id="form1" runat="server">
+            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+            </asp:ContentPlaceHolder>
+        </form>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function toggleMenu(id) {
+            var menu = document.getElementById(id);
+            var icon = document.getElementById('icon' + id.replace('menu', ''));
+            menu.classList.toggle('open');
+            if (icon) icon.classList.toggle('open');
+        }
+
+        // Marcar item activo según URL
+        var path = window.location.pathname.toLowerCase();
+        var items = document.querySelectorAll('.sidebar-item');
+        items.forEach(function (item) {
+            if (item.href && path.indexOf(item.getAttribute('href').toLowerCase()) !== -1) {
+                item.classList.add('active');
+            }
+        });
+    </script>
+
+    <asp:ContentPlaceHolder ID="scripts" runat="server">
+    </asp:ContentPlaceHolder>
+
+</body>
+</html>

@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="ManagerRounds" Class="DataClasses1DataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=MQR1NA-RGALARZA;Initial Catalog=ManagerRounds;User ID=sa;Trust Server Certificate=True" SettingsObjectName="Datos.Properties.Settings" SettingsPropertyName="ManagerRoundsConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.Clasificaciones" Member="Clasificaciones">
+    <Type Name="Clasificaciones">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Clasificacion" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="Clasificaciones_Preguntas" Member="Preguntas" ThisKey="id" OtherKey="Clasificacion_id" Type="Preguntas" />
+    </Type>
+  </Table>
+  <Table Name="dbo.EstatusRevision" Member="EstatusRevision">
+    <Type Name="EstatusRevision">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Estatus" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
+      <Association Name="EstatusRevision_Revisiones" Member="Revisiones" ThisKey="id" OtherKey="Estatus_id" Type="Revisiones" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ManagerSecciones" Member="ManagerSecciones">
+    <Type Name="ManagerSecciones">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Usuario_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Seccion" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="TipoArea_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="TipoCheck_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Activo" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="ManagerSecciones_Revisiones" Member="Revisiones" ThisKey="id" OtherKey="ManagerSeccion_id" Type="Revisiones" />
+      <Association Name="TiposArea_ManagerSecciones" Member="TiposArea" ThisKey="TipoArea_id" OtherKey="id" Type="TiposArea" IsForeignKey="true" />
+      <Association Name="TiposCheck_ManagerSecciones" Member="TiposCheck" ThisKey="TipoCheck_id" OtherKey="id" Type="TiposCheck" IsForeignKey="true" />
+      <Association Name="Usuarios_ManagerSecciones" Member="Usuarios" ThisKey="Usuario_id" OtherKey="id" Type="Usuarios" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Preguntas" Member="Preguntas">
+    <Type Name="Preguntas">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Check_id" Type="System.String" DbType="VarChar(2) NOT NULL" CanBeNull="false" />
+      <Column Name="Clasificacion_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="TipoArea_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Pregunta" Type="System.String" DbType="VarChar(500) NOT NULL" CanBeNull="false" />
+      <Column Name="Activo" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="Preguntas_RespuestasRevision" Member="RespuestasRevision" ThisKey="id" OtherKey="Pregunta_id" Type="RespuestasRevision" />
+      <Association Name="Clasificaciones_Preguntas" Member="Clasificaciones" ThisKey="Clasificacion_id" OtherKey="id" Type="Clasificaciones" IsForeignKey="true" />
+      <Association Name="TiposArea_Preguntas" Member="TiposArea" ThisKey="TipoArea_id" OtherKey="id" Type="TiposArea" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.RespuestasRevision" Member="RespuestasRevision">
+    <Type Name="RespuestasRevision">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Revision_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Pregunta_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Respuesta_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Comentario" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Association Name="Preguntas_RespuestasRevision" Member="Preguntas" ThisKey="Pregunta_id" OtherKey="id" Type="Preguntas" IsForeignKey="true" />
+      <Association Name="Revisiones_RespuestasRevision" Member="Revisiones" ThisKey="Revision_id" OtherKey="id" Type="Revisiones" IsForeignKey="true" />
+      <Association Name="TiposRespuesta_RespuestasRevision" Member="TiposRespuesta" ThisKey="Respuesta_id" OtherKey="id" Type="TiposRespuesta" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Revisiones" Member="Revisiones">
+    <Type Name="Revisiones">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Usuario_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ManagerSeccion_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Fecha" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="Check_id" Type="System.String" DbType="VarChar(2) NOT NULL" CanBeNull="false" />
+      <Column Name="FechaInicio" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="FechaFin" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Calificacion" Type="System.Decimal" DbType="Decimal(5,2)" CanBeNull="true" />
+      <Column Name="Estatus_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ComentarioRevisor" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Association Name="Revisiones_RespuestasRevision" Member="RespuestasRevision" ThisKey="id" OtherKey="Revision_id" Type="RespuestasRevision" />
+      <Association Name="EstatusRevision_Revisiones" Member="EstatusRevision" ThisKey="Estatus_id" OtherKey="id" Type="EstatusRevision" IsForeignKey="true" />
+      <Association Name="ManagerSecciones_Revisiones" Member="ManagerSecciones" ThisKey="ManagerSeccion_id" OtherKey="id" Type="ManagerSecciones" IsForeignKey="true" />
+      <Association Name="Usuarios_Revisiones" Member="Usuarios" ThisKey="Usuario_id" OtherKey="id" Type="Usuarios" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Roles" Member="Roles">
+    <Type Name="Roles">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Rol" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
+      <Association Name="Roles_Usuarios" Member="Usuarios" ThisKey="id" OtherKey="Rol_id" Type="Usuarios" />
+    </Type>
+  </Table>
+  <Table Name="dbo.TiposArea" Member="TiposArea">
+    <Type Name="TiposArea">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Area" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="TiposArea_ManagerSecciones" Member="ManagerSecciones" ThisKey="id" OtherKey="TipoArea_id" Type="ManagerSecciones" />
+      <Association Name="TiposArea_Preguntas" Member="Preguntas" ThisKey="id" OtherKey="TipoArea_id" Type="Preguntas" />
+    </Type>
+  </Table>
+  <Table Name="dbo.TiposCheck" Member="TiposCheck">
+    <Type Name="TiposCheck">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Tipo" Type="System.String" DbType="VarChar(1) NOT NULL" CanBeNull="false" />
+      <Association Name="TiposCheck_ManagerSecciones" Member="ManagerSecciones" ThisKey="id" OtherKey="TipoCheck_id" Type="ManagerSecciones" />
+    </Type>
+  </Table>
+  <Table Name="dbo.TiposRespuesta" Member="TiposRespuesta">
+    <Type Name="TiposRespuesta">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Respuesta" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
+      <Association Name="TiposRespuesta_RespuestasRevision" Member="RespuestasRevision" ThisKey="id" OtherKey="Respuesta_id" Type="RespuestasRevision" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Usuarios" Member="Usuarios">
+    <Type Name="Usuarios">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Nombre" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Nomina" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="Password" Type="System.String" DbType="VarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="Rol_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Activo" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="Usuarios_ManagerSecciones" Member="ManagerSecciones" ThisKey="id" OtherKey="Usuario_id" Type="ManagerSecciones" />
+      <Association Name="Usuarios_Revisiones" Member="Revisiones" ThisKey="id" OtherKey="Usuario_id" Type="Revisiones" />
+      <Association Name="Roles_Usuarios" Member="Roles" ThisKey="Rol_id" OtherKey="id" Type="Roles" IsForeignKey="true" />
+    </Type>
+  </Table>
+</Database>
