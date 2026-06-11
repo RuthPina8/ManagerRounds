@@ -6,9 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Manager Rounds · Astemo</title>
 
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
 
     <style>
@@ -25,12 +23,9 @@
             padding: 0;
         }
 
-        /* ===== TOPBAR ===== */
         .topbar {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 0; left: 0; right: 0;
             height: 50px;
             background: #1a1a1a;
             display: flex;
@@ -48,9 +43,7 @@
             letter-spacing: 0.5px;
         }
 
-        .topbar-brand span {
-            color: var(--astemo-red);
-        }
+        .topbar-brand span { color: var(--astemo-red); }
 
         .topbar-user {
             color: #ccc;
@@ -60,24 +53,56 @@
             gap: 12px;
         }
 
-        .topbar-user a {
+        .perfil-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .perfil-trigger {
+            cursor: pointer;
             color: #ccc;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .perfil-trigger:hover { color: #fff; }
+
+        .perfil-dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 34px;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            min-width: 160px;
+            z-index: 2000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .perfil-dropdown-menu.open { display: block; }
+
+        .perfil-dropdown-menu a {
+            display: block;
+            padding: 10px 14px;
+            font-size: 13px;
+            color: #444;
             text-decoration: none;
         }
 
-        .topbar-user a:hover {
-            color: #fff;
+        .perfil-dropdown-menu a:hover {
+            background: #f4f6f8;
+            color: #222;
         }
 
-        .topbar-user .divider {
-            color: #555;
+        .perfil-dropdown-menu .divider-menu {
+            border-top: 1px solid #f0f0f0;
         }
 
-        /* ===== SIDEBAR ===== */
         .sidebar {
             position: fixed;
-            top: 50px;
-            left: 0;
+            top: 50px; left: 0;
             width: var(--sidebar-width);
             height: calc(100vh - 50px);
             background: #fff;
@@ -127,19 +152,14 @@
             color: #888;
         }
 
-        .sidebar-item.active i {
-            color: var(--astemo-red);
-        }
+        .sidebar-item.active i { color: var(--astemo-red); }
 
-        /* Submenú desplegable */
         .sidebar-submenu {
             display: none;
             background: #fafafa;
         }
 
-        .sidebar-submenu.open {
-            display: block;
-        }
+        .sidebar-submenu.open { display: block; }
 
         .sidebar-submenu .sidebar-item {
             padding-left: 44px;
@@ -153,16 +173,11 @@
             transition: transform 0.2s;
         }
 
-        .sidebar-toggle.open {
-            transform: rotate(180deg);
-        }
+        .sidebar-toggle.open { transform: rotate(180deg); }
 
-        /* Logo Astemo abajo */
         .sidebar-footer {
             position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            bottom: 0; left: 0; right: 0;
             padding: 16px;
             border-top: 1px solid #f0f0f0;
             text-align: center;
@@ -174,7 +189,6 @@
             margin: 4px 0 0;
         }
 
-        /* ===== CONTENIDO PRINCIPAL ===== */
         .main-content {
             margin-left: var(--sidebar-width);
             margin-top: 50px;
@@ -182,7 +196,6 @@
             min-height: calc(100vh - 50px);
         }
 
-        /* ===== TARJETAS ===== */
         .card-mr {
             background: #fff;
             border: 1px solid #e8e8e8;
@@ -201,18 +214,16 @@
             margin-bottom: 0;
         }
 
-        /* ===== BADGES ===== */
-        .badge-cumple { background: #EAF3DE; color: #3B6D11; }
-        .badge-nocumple { background: #FCEBEB; color: #A32D2D; }
-        .badge-na { background: #f0f0f0; color: #666; }
+        .badge-cumple    { background: #EAF3DE; color: #3B6D11; }
+        .badge-nocumple  { background: #FCEBEB; color: #A32D2D; }
+        .badge-na        { background: #f0f0f0; color: #666; }
         .badge-pendiente { background: #FCEBEB; color: #A32D2D; }
-        .badge-revisado { background: #EEEDFE; color: #534AB7; }
+        .badge-revisado  { background: #EEEDFE; color: #534AB7; }
         .badge-rechazado { background: #FAEEDA; color: #854F0B; }
         .badge-corregido { background: #EAF3DE; color: #3B6D11; }
-        .badge-activo { background: #EAF3DE; color: #3B6D11; }
-        .badge-inactivo { background: #FCEBEB; color: #A32D2D; }
+        .badge-activo    { background: #EAF3DE; color: #3B6D11; }
+        .badge-inactivo  { background: #FCEBEB; color: #A32D2D; }
 
-        /* ===== BOTÓN PRIMARIO ===== */
         .btn-astemo {
             background: var(--astemo-red);
             color: #fff;
@@ -230,43 +241,46 @@
         }
     </style>
 
-    <asp:ContentPlaceHolder ID="head" runat="server">
-    </asp:ContentPlaceHolder>
+    <asp:ContentPlaceHolder ID="head" runat="server"></asp:ContentPlaceHolder>
 </head>
 <body>
 
-    <!-- TOPBAR -->
     <div class="topbar">
         <div class="topbar-brand">MANAGER <span>ROUNDS</span></div>
         <div class="topbar-user">
-            <span><i class="fas fa-user-circle"></i> <%= Session["nombreUsuario"] %></span>
-            <span class="divider">|</span>
-            <a href="/Account/Login.aspx">Salir</a>
+            <div class="perfil-dropdown">
+                <div class="perfil-trigger" onclick="togglePerfil()">
+                    <i class="fas fa-user-circle"></i>
+                    <%= Session["nombreUsuario"] %>
+                    <i class="fas fa-chevron-down" style="font-size:11px;"></i>
+                </div>
+                <div class="perfil-dropdown-menu" id="perfilMenu">
+                    <a href="/Account/Perfil.aspx" target="_blank">
+                        <i class="fas fa-user mr-2"></i> Ver perfil
+                    </a>
+                    <div class="divider-menu"></div>
+                    <a href="/Account/Logout.aspx">
+                        <i class="fas fa-sign-out-alt mr-2"></i> Salir
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- SIDEBAR -->
     <div class="sidebar">
-
         <div class="sidebar-section">Recorridos</div>
-
         <a class="sidebar-item" href="/formulario/Default.aspx">
             <i class="fas fa-clipboard-list"></i> Formulario del día
         </a>
-
         <a class="sidebar-item" href="/dashboard/Default.aspx">
             <i class="fas fa-chart-bar"></i> Dashboard
         </a>
-
         <a class="sidebar-item" href="/historial/Default.aspx">
             <i class="fas fa-history"></i> Historial
         </a>
 
-        <!-- Solo visible para Revisor -->
         <% if (Session["rol"] != null && Session["rol"].ToString() == "Revisor") { %>
-
         <div class="sidebar-section">Administración</div>
-
         <div class="sidebar-item" onclick="toggleMenu('menuAdmin')">
             <i class="fas fa-cog"></i> Configuración
             <i class="fas fa-chevron-down sidebar-toggle" id="iconAdmin"></i>
@@ -279,7 +293,6 @@
                 <i class="fas fa-question-circle"></i> Preguntas
             </a>
         </div>
-
         <% } %>
 
         <div class="sidebar-footer">
@@ -288,19 +301,28 @@
         </div>
     </div>
 
-    <!-- CONTENIDO -->
     <div class="main-content">
         <form id="form1" runat="server">
-            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
-            </asp:ContentPlaceHolder>
+            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server"></asp:ContentPlaceHolder>
         </form>
     </div>
 
-    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+        function togglePerfil() {
+            document.getElementById('perfilMenu').classList.toggle('open');
+        }
+
+        document.addEventListener('click', function (e) {
+            var dropdown = document.querySelector('.perfil-dropdown');
+            var menu = document.getElementById('perfilMenu');
+            if (menu && dropdown && !dropdown.contains(e.target)) {
+                menu.classList.remove('open');
+            }
+        });
+
         function toggleMenu(id) {
             var menu = document.getElementById(id);
             var icon = document.getElementById('icon' + id.replace('menu', ''));
@@ -308,7 +330,6 @@
             if (icon) icon.classList.toggle('open');
         }
 
-        // Marcar item activo según URL
         var path = window.location.pathname.toLowerCase();
         var items = document.querySelectorAll('.sidebar-item');
         items.forEach(function (item) {
@@ -318,8 +339,7 @@
         });
     </script>
 
-    <asp:ContentPlaceHolder ID="scripts" runat="server">
-    </asp:ContentPlaceHolder>
+    <asp:ContentPlaceHolder ID="scripts" runat="server"></asp:ContentPlaceHolder>
 
 </body>
 </html>

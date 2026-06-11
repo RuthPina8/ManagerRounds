@@ -110,11 +110,9 @@
     <form id="form1" runat="server">
         <div class="login-box">
             <div class="login-header">
-                <div class="login-icon">
-                    <i class="fas fa-clipboard-check"></i>
-                </div>
-                <h5>Manager Rounds</h5>
-                <p>Astemo · MXQRP1</p>
+             
+                <img src="/Content/astemo-logo.png" alt="Astemo" style="height:60px; margin: 0 auto 14px; display:block;" />
+                <h4>Manager Rounds</h4>
             </div>
 
             <div class="error-msg" id="errorMsg" runat="server">
@@ -132,8 +130,11 @@
             </div>
 
             <asp:Button ID="btnLogin" runat="server" Text="Iniciar sesión" CssClass="btn-login" OnClick="btnLogin_Click" />
+            <center><h6>Astemo · MXQRP1</h6></center>
         </div>
+            
     </form>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+   
 </body>
 </html>
