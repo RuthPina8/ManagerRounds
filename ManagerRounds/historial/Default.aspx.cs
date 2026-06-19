@@ -17,7 +17,61 @@ namespace ManagerRounds.historial
                 DateTime lunes = GetLunesActual();
                 hfLunes.Value = lunes.ToString("yyyy-MM-dd");
                 ActualizarNavegador(lunes);
-                CargarRevisiones(lunes);
+
+                // Aplicar filtro desde querystring si viene del dashboard
+                string filtro = Request.QueryString["filtro"];
+                if (!string.IsNullOrEmpty(filtro))
+                    AplicarFiltroDashboard(filtro, lunes);
+                else
+                    CargarRevisiones(lunes);
+            }
+        }
+
+        private void AplicarFiltroDashboard(string filtro, DateTime lunes)
+        {
+            var db = new Datos.DataClasses1DataContext();
+            DateTime viernes = lunes.AddDays(4);
+            int usuarioId = Convert.ToInt32(Session["idUsuario"]);
+            string rol = Session["rol"]?.ToString();
+
+            switch (filtro)
+            {
+                case "completados":
+                    ddlFiltroEstatus.SelectedValue = "2";
+                    CargarRevisiones(lunes);
+                    break;
+                case "pendientes":
+                    ddlFiltroEstatus.SelectedValue = "1";
+                    CargarRevisiones(lunes);
+                    break;
+                case "hallazgos_abiertos":
+                    var revHallazgosAbiertos = db.RespuestasRevision
+                        .Where(r => r.TiposRespuesta.Respuesta == "Falla"
+                            && r.HallazgoCerrado == false
+                            && (rol == "Admin" || r.Revisiones.Usuario_id == usuarioId))
+                        .Select(r => r.Revisiones)
+                        .Distinct()
+                        .OrderByDescending(r => r.FechaInicio)
+                        .ToList();
+                    gvRevisiones.DataSource = revHallazgosAbiertos;
+                    gvRevisiones.DataBind();
+                    break;
+                case "hallazgos_cerrados":
+                    var revHallazgosCerrados = db.RespuestasRevision
+                        .Where(r => r.HallazgoCerrado == true
+                            && r.FechaCierre >= lunes
+                            && r.FechaCierre <= viernes
+                            && (rol == "Admin" || r.Revisiones.Usuario_id == usuarioId))
+                        .Select(r => r.Revisiones)
+                        .Distinct()
+                        .OrderByDescending(r => r.FechaInicio)
+                        .ToList();
+                    gvRevisiones.DataSource = revHallazgosCerrados;
+                    gvRevisiones.DataBind();
+                    break;
+                default:
+                    CargarRevisiones(lunes);
+                    break;
             }
         }
 
@@ -32,21 +86,27 @@ namespace ManagerRounds.historial
         private void ActualizarNavegador(DateTime lunes)
         {
             DateTime viernes = lunes.AddDays(4);
-            int semana = System.Globalization.CultureInfo.CurrentCulture.Calendar.GetWeekOfYear( lunes, System.Globalization.CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+            int semana = System.Globalization.CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(
+                lunes, System.Globalization.CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
             lblSemana.Text = "Semana " + semana;
             lblRangoSemana.Text = lunes.ToString("dd MMM") + " – " + viernes.ToString("dd MMM yyyy");
         }
 
         private void CargarRevisiones(DateTime lunes)
         {
+            int usuarioId = Convert.ToInt32(Session["idUsuario"]);
+            string rol = Session["rol"]?.ToString();
+
             string checkId = ddlFiltroCheck.SelectedValue;
             int? estatusId = string.IsNullOrEmpty(ddlFiltroEstatus.SelectedValue) ? (int?)null : int.Parse(ddlFiltroEstatus.SelectedValue);
 
-            var revisiones = Control.Control.GetRevisiones(
-                lunes,
+            var revisiones = Control.Control.GetRevisiones(lunes,
                 string.IsNullOrEmpty(checkId) ? null : checkId,
-                estatusId
-            );
+                estatusId);
+
+            // Manager solo ve sus revisiones
+            if (rol == "Manager")
+                revisiones = revisiones.Where(r => r.Usuario_id == usuarioId).ToList();
 
             string buscar = txtBuscar.Text.Trim().ToLower();
             if (!string.IsNullOrEmpty(buscar))
@@ -62,7 +122,6 @@ namespace ManagerRounds.historial
         private void CargarBitacora(DateTime lunes)
         {
             var revisiones = Control.Control.GetRevisiones(lunes);
-
             var entradas = new List<object>();
 
             foreach (var r in revisiones)

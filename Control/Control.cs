@@ -114,14 +114,31 @@ namespace Control
 
         public int CrearRevision(int usuarioId, int seccionId, string checkId)
         {
+            // Calcular fecha correcta según el número de check
+            string checkNumero = checkId.Substring(0, 1);
+            DateTime lunes = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + 1);
+            DateTime fechaCheck;
+
+            switch (checkNumero)
+            {
+                case "1": fechaCheck = lunes; break;
+                case "2": fechaCheck = lunes.AddDays(1); break;
+                case "3": fechaCheck = lunes.AddDays(2); break;
+                case "4": fechaCheck = lunes.AddDays(3); break;
+                default: fechaCheck = DateTime.Today; break;
+            }
+
+            bool entregadoTarde = DateTime.Today.DayOfWeek == DayOfWeek.Friday && fechaCheck != DateTime.Today;
+
             var revision = new Revisiones
             {
                 Usuario_id = usuarioId,
                 ManagerSeccion_id = seccionId,
-                Fecha = DateTime.Today,
+                Fecha = fechaCheck,
                 Check_id = checkId,
                 FechaInicio = DateTime.Now,
-                Estatus_id = 1
+                Estatus_id = 1,
+                EntregadoTarde = entregadoTarde
             };
             db.Revisiones.InsertOnSubmit(revision);
             db.SubmitChanges();
@@ -162,7 +179,7 @@ namespace Control
                 .ToList();
 
             int total = respuestas.Count;
-            int cumplen = respuestas.Count(r => r.TiposRespuesta.Respuesta == "Cumple");
+            int cumplen = respuestas.Count(r => r.TiposRespuesta.Respuesta == "Aprobado");
             int na = respuestas.Count(r => r.TiposRespuesta.Respuesta == "N/A");
 
             int evaluables = total - na;
@@ -173,7 +190,6 @@ namespace Control
             revision.Estatus_id = 1;
             db.SubmitChanges();
         }
-
         public void RecalcularCalificacion(int revisionId)
         {
             var revision = db.Revisiones.FirstOrDefault(r => r.id == revisionId);
@@ -184,7 +200,7 @@ namespace Control
                 .ToList();
 
             int total = respuestas.Count;
-            int cumplen = respuestas.Count(r => r.TiposRespuesta.Respuesta == "Cumple");
+            int cumplen = respuestas.Count(r => r.TiposRespuesta.Respuesta == "Aprobado");
             int na = respuestas.Count(r => r.TiposRespuesta.Respuesta == "N/A");
 
             int evaluables = total - na;
@@ -746,6 +762,35 @@ namespace Control
                     && r.HallazgoCerrado == false
                     && r.FotoProblema != null)
                 .ToList();
+        }
+        public int CompletadosSemanaManager(int usuarioId)
+        {
+            DateTime lunes = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + 1);
+            DateTime viernes = lunes.AddDays(4);
+            var db = new Datos.DataClasses1DataContext();
+            return db.Revisiones
+                .Where(r => r.Usuario_id == usuarioId
+                    && r.Fecha >= lunes
+                    && r.Fecha <= viernes
+                    && r.Estatus_id != 3)
+                .Select(r => r.Check_id)
+                .Distinct()
+                .Count();
+        }
+
+        public decimal CumplimientoSemanaManager(int usuarioId)
+        {
+            DateTime lunes = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + 1);
+            DateTime viernes = lunes.AddDays(4);
+            var db = new Datos.DataClasses1DataContext();
+            var revisiones = db.Revisiones
+                .Where(r => r.Usuario_id == usuarioId
+                    && r.Fecha >= lunes
+                    && r.Fecha <= viernes
+                    && r.Calificacion != null)
+                .ToList();
+            if (!revisiones.Any()) return 0;
+            return Math.Round(revisiones.Sum(r => r.Calificacion.Value) / 4, 1);
         }
     }
 }

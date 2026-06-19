@@ -103,21 +103,23 @@
                                         Text="Debes escribir un comentario o marcar 'Sin comentario'" />
                                 </div>
 
-                                <!-- Panel hallazgo — visible solo cuando es Falla -->
+                                <!-- Panel hallazgo -->
                                 <div class="panel-hallazgo" style="display:none; background:#FFF3CD; border-radius:6px; padding:12px 14px; margin-top:8px; border:1px solid #F0A500;">
                                     <p style="font-size:12px; font-weight:500; color:#7A5100; margin:0 0 8px;">
                                         <i class="fas fa-exclamation-triangle mr-1"></i> Hallazgo — Foto del problema
                                     </p>
-                                    <input type="file" id="fuFotoProblema" name="fuFotoProblema" 
-                                        accept="image/*" capture="environment" class="form-control-file" style="font-size:12px;" />
+                                    <asp:FileUpload ID="fuFotoProblema" runat="server" CssClass="form-control-file"
+                                        style="font-size:12px;" accept="image/*" />
+                                    <img class="preview-foto" style="display:none; margin-top:8px; width:120px; height:80px; object-fit:cover; border-radius:6px; border:1px solid #F0A500;" />
                                     <p style="font-size:11px; color:#aaa; margin:6px 0 0;">Obligatorio al marcar Falla.</p>
 
                                     <div style="margin-top:10px; border-top:1px solid #F0A500; padding-top:10px;">
                                         <p style="font-size:12px; font-weight:500; color:#7A5100; margin:0 0 8px;">
                                             <i class="fas fa-check-circle mr-1"></i> Foto de cierre (opcional)
                                         </p>
-                                        <asp:FileUpload ID="fuFotoCierre" runat="server" CssClass="form-control-file" 
+                                        <asp:FileUpload ID="fuFotoCierre" runat="server" CssClass="form-control-file"
                                             style="font-size:12px;" accept="image/*" />
+                                        <img class="preview-cierre" style="display:none; margin-top:8px; width:120px; height:80px; object-fit:cover; border-radius:6px; border:1px solid #639922;" />
                                         <p style="font-size:11px; color:#aaa; margin:6px 0 0;">Si ya tienes la evidencia de solución, súbela aquí.</p>
                                     </div>
                                 </div>
@@ -157,28 +159,16 @@
         cursor: pointer;
         transition: all 0.15s;
     }
-
     .btn-check-selector:hover { background: #e0e0e0; color: #333; }
-
-    .btn-check-active {
-        background: #CC0000 !important;
-        color: #fff !important;
-        border-color: #CC0000 !important;
-    }
-
-    .btn-check-completado {
-        background: #EAF3DE !important;
-        color: #3B6D11 !important;
-        border-color: #639922 !important;
-    }
-
+    .btn-check-active { background: #CC0000 !important; color: #fff !important; border-color: #CC0000 !important; }
+    .btn-check-completado { background: #EAF3DE !important; color: #3B6D11 !important; border-color: #639922 !important; }
     .opciones-respuesta label { margin-right: 16px; font-size: 13px; cursor: pointer; }
     .opciones-respuesta input[type="radio"] { margin-right: 4px; }
 </style>
 
 <script>
-    // Mostrar/ocultar panel de hallazgo según respuesta
     document.addEventListener('change', function (e) {
+        // Radio — mostrar/ocultar panel hallazgo
         if (e.target && e.target.type === 'radio') {
             var row = e.target.closest('div[style*="flex:1"]');
             if (!row) return;
@@ -186,9 +176,16 @@
             if (panelHallazgo) {
                 var esFalla = e.target.value === '2';
                 panelHallazgo.style.display = esFalla ? 'block' : 'none';
+                if (!esFalla) {
+                    var pf = panelHallazgo.querySelector('.preview-foto');
+                    var pc = panelHallazgo.querySelector('.preview-cierre');
+                    if (pf) pf.style.display = 'none';
+                    if (pc) pc.style.display = 'none';
+                }
             }
         }
 
+        // Checkbox — mostrar/ocultar comentario
         if (e.target && e.target.type === 'checkbox') {
             var row = e.target.closest('div[style*="background:#f8f8f8"]');
             if (!row) return;
@@ -196,6 +193,25 @@
             if (txt) {
                 txt.style.display = e.target.checked ? 'none' : 'block';
                 txt.required = !e.target.checked;
+            }
+        }
+
+        // File — preview de foto
+        if (e.target && e.target.type === 'file') {
+            var panel = e.target.closest('.panel-hallazgo');
+            if (!panel) return;
+            var isProblema = e.target.id && e.target.id.indexOf('fuFotoProblema') >= 0;
+            var preview = panel.querySelector(isProblema ? '.preview-foto' : '.preview-cierre');
+            if (!preview) return;
+            if (e.target.files && e.target.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (ev) {
+                    preview.src = ev.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            } else {
+                preview.style.display = 'none';
             }
         }
     });
@@ -217,7 +233,6 @@
             }
         });
 
-        // Validar foto obligatoria en Fallas
         var panelesFalla = document.querySelectorAll('.panel-hallazgo');
         panelesFalla.forEach(function (panel) {
             if (panel.style.display !== 'none') {

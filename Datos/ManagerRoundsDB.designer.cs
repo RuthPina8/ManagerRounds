@@ -1462,6 +1462,8 @@ namespace Datos
 		
 		private string _ComentarioRevisor;
 		
+		private bool _EntregadoTarde;
+		
 		private EntitySet<RespuestasRevision> _RespuestasRevision;
 		
 		private EntityRef<EstatusRevision> _EstatusRevision;
@@ -1494,6 +1496,8 @@ namespace Datos
     partial void OnEstatus_idChanged();
     partial void OnComentarioRevisorChanging(string value);
     partial void OnComentarioRevisorChanged();
+    partial void OnEntregadoTardeChanging(bool value);
+    partial void OnEntregadoTardeChanged();
     #endregion
 		
 		public Revisiones()
@@ -1713,6 +1717,26 @@ namespace Datos
 					this._ComentarioRevisor = value;
 					this.SendPropertyChanged("ComentarioRevisor");
 					this.OnComentarioRevisorChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EntregadoTarde", DbType="Bit NOT NULL")]
+		public bool EntregadoTarde
+		{
+			get
+			{
+				return this._EntregadoTarde;
+			}
+			set
+			{
+				if ((this._EntregadoTarde != value))
+				{
+					this.OnEntregadoTardeChanging(value);
+					this.SendPropertyChanging();
+					this._EntregadoTarde = value;
+					this.SendPropertyChanged("EntregadoTarde");
+					this.OnEntregadoTardeChanged();
 				}
 			}
 		}

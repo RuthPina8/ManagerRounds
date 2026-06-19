@@ -40,24 +40,30 @@ namespace ManagerRounds.dashboard
             lblSemana.Text = "Semana " + semana;
             lblRango.Text = lunes.ToString("dd MMM") + " – " + viernes.ToString("dd MMM yyyy");
 
-            lblManagersActivos.Text = control.TotalManagersActivos().ToString();
-            lblCompletadosHoy.Text = control.CompletadosHoy().ToString();
-            lblPendientesHoy.Text = control.PendientesHoy().ToString();
-            lblCumplimiento.Text = control.CumplimientoSemana().ToString() + "%";
-
-            // Hallazgos
             int usuarioId = Convert.ToInt32(Session["idUsuario"]);
             string rol = Session["rol"]?.ToString();
 
             if (rol == "Admin")
             {
+                lblManagersActivos.Text = control.TotalManagersActivos().ToString();
+                lblCompletadosHoy.Text = control.CompletadosHoy().ToString();
+                lblPendientesHoy.Text = control.PendientesHoy().ToString();
+                lblCumplimiento.Text = control.CumplimientoSemana().ToString() + "%";
                 lblHallazgosAbiertos.Text = Control.Control.HallazgosAbiertosTotal().ToString();
                 lblHallazgosCerrados.Text = Control.Control.HallazgosCerradosSemanaTotal(lunes).ToString();
+                pnlTarjetasAdmin.Visible = true;
+                pnlTarjetasManager.Visible = false;
             }
             else
             {
-                lblHallazgosAbiertos.Text = Control.Control.HallazgosAbiertos(usuarioId).ToString();
-                lblHallazgosCerrados.Text = Control.Control.HallazgosCerradosSemana(usuarioId).ToString();
+                int completados = control.CompletadosSemanaManager(usuarioId);
+                lblCompletadosSemana.Text = completados + "/4";
+                lblPendientesSemana.Text = (4 - completados) + "/4";
+                lblCumplimientoManager.Text = control.CumplimientoSemanaManager(usuarioId).ToString() + "%";
+                lblHallazgosAbiertosManager.Text = Control.Control.HallazgosAbiertos(usuarioId).ToString();
+                lblHallazgosCerradosManager.Text = Control.Control.HallazgosCerradosSemana(usuarioId).ToString();
+                pnlTarjetasAdmin.Visible = false;
+                pnlTarjetasManager.Visible = true;
             }
 
             gvManagers.DataSource = control.TablaManagersSemana(lunes);

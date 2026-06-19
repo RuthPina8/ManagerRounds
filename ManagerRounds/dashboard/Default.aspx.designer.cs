@@ -60,6 +60,15 @@ namespace ManagerRounds.dashboard
         protected global::System.Web.UI.WebControls.HiddenField hfLunes;
 
         /// <summary>
+        /// Control pnlTarjetasAdmin.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlTarjetasAdmin;
+
+        /// <summary>
         /// Control lblManagersActivos.
         /// </summary>
         /// <remarks>
@@ -112,6 +121,60 @@ namespace ManagerRounds.dashboard
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblHallazgosCerrados;
+
+        /// <summary>
+        /// Control pnlTarjetasManager.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlTarjetasManager;
+
+        /// <summary>
+        /// Control lblCompletadosSemana.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblCompletadosSemana;
+
+        /// <summary>
+        /// Control lblPendientesSemana.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblPendientesSemana;
+
+        /// <summary>
+        /// Control lblCumplimientoManager.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblCumplimientoManager;
+
+        /// <summary>
+        /// Control lblHallazgosAbiertosManager.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblHallazgosAbiertosManager;
+
+        /// <summary>
+        /// Control lblHallazgosCerradosManager.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblHallazgosCerradosManager;
 
         /// <summary>
         /// Control gvManagers.

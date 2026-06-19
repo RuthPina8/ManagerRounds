@@ -163,11 +163,10 @@
 </asp:Panel>
 
 <!-- Modal visor de foto -->
-<div class="modal-foto" id="modalFoto" onclick="cerrarFoto()">
+    <div class="modal-foto" id="modalFoto" onclick="cerrarFoto()">
     <span class="modal-foto-close" onclick="cerrarFoto()">&times;</span>
     <img id="imgModalFoto" src="" alt="Hallazgo" />
 </div>
-
 <script>
     function verFoto(src) {
         document.getElementById('imgModalFoto').src = src;
@@ -176,6 +175,27 @@
     function cerrarFoto() {
         document.getElementById('modalFoto').classList.remove('open');
     }
+
+    document.addEventListener('change', function (e) {
+        if (e.target && e.target.type === 'file') {
+            var panel = e.target.closest('.panel-hallazgo');
+            if (!panel) return;
+            var isProblema = e.target.id && e.target.id.indexOf('fuFotoProblema') >= 0;
+            var previewClass = isProblema ? '.preview-foto' : '.preview-cierre';
+            var preview = panel.querySelector(previewClass);
+            if (!preview) return;
+            if (e.target.files && e.target.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (ev) {
+                    preview.src = ev.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            } else {
+                preview.style.display = 'none';
+            }
+        }
+    });
 </script>
 
 </asp:Content>

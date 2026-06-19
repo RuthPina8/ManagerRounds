@@ -70,6 +70,7 @@
 			<Column Name="Calificacion" Type="System.Decimal" DbType="Decimal(5,2)" CanBeNull="true" />
 			<Column Name="Estatus_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
 			<Column Name="ComentarioRevisor" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+			<Column Name="EntregadoTarde" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
 			<Association Name="Revisiones_RespuestasRevision" Member="RespuestasRevision" ThisKey="id" OtherKey="Revision_id" Type="RespuestasRevision" />
 			<Association Name="EstatusRevision_Revisiones" Member="EstatusRevision" ThisKey="Estatus_id" OtherKey="id" Type="EstatusRevision" IsForeignKey="true" />
 			<Association Name="ManagerSecciones_Revisiones" Member="ManagerSecciones" ThisKey="ManagerSeccion_id" OtherKey="id" Type="ManagerSecciones" IsForeignKey="true" />

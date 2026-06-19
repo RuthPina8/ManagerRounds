@@ -159,6 +159,7 @@
                     <asp:TemplateField HeaderText="Check">
                         <ItemTemplate>
                             <span class='badge-check-hist badge-check-<%# Eval("Check_id").ToString().ToLower() %>'><%# Eval("Check_id") %></span>
+                            <%# (bool)Eval("EntregadoTarde") ? "<span style='background:#FAEEDA; color:#854F0B; font-size:10px; padding:1px 6px; border-radius:10px; margin-left:4px;'>Tarde</span>" : "" %>
                         </ItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="Fecha y hora">
@@ -180,14 +181,17 @@
                             </span>
                         </ItemTemplate>
                     </asp:TemplateField>
-                    <asp:TemplateField HeaderText="Ver">
-                        <ItemTemplate>
-                            <asp:LinkButton runat="server" CommandName="Ver" CommandArgument='<%# Eval("id") %>'
-                                CssClass="btn-accion" title="Ver detalle">
-                                <i class="fas fa-eye"></i>
-                            </asp:LinkButton>
-                        </ItemTemplate>
-                    </asp:TemplateField>
+                    <asp:TemplateField HeaderText="Acciones">
+    <ItemTemplate>
+        <asp:LinkButton runat="server" CommandName="Ver" CommandArgument='<%# Eval("id") %>'
+            CssClass="btn-accion" title="Ver detalle">
+            <i class="fas fa-eye"></i>
+        </asp:LinkButton>
+        <%# Eval("EstatusRevision.Estatus").ToString() == "Pendiente" ? 
+            "<a href='/formulario/Default.aspx?editar=" + Eval("Check_id") + "&revid=" + Eval("id") + "' class='btn-accion ml-1' title='Editar'><i class='fas fa-edit'></i></a>" 
+            : "" %>
+    </ItemTemplate>
+</asp:TemplateField>
                 </Columns>
             </asp:GridView>
         </div>

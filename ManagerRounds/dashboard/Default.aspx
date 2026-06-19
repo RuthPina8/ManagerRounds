@@ -24,54 +24,92 @@
 
     <asp:HiddenField ID="hfLunes" runat="server" />
 
-   <!-- Fila 1 tarjetas -->
-<div style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:14px;">
-    <a href="/admin/Usuarios.aspx" class="tarjeta-dash">
-        <div style="background:#FCEBEB; border-radius:8px; padding:12px 16px; border-left:4px solid #CC0000;">
-            <p style="font-size:12px; color:#A32D2D; margin:0 0 4px;">Managers activos</p>
-            <asp:Label ID="lblManagersActivos" runat="server" style="font-size:24px; font-weight:600; color:#A32D2D;">0</asp:Label>
+    <!-- Tarjetas Admin -->
+    <asp:Panel ID="pnlTarjetasAdmin" runat="server">
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:14px;">
+            <a href="/admin/Usuarios.aspx" class="tarjeta-dash">
+                <div style="background:#FCEBEB; border-radius:8px; padding:12px 16px; border-left:4px solid #CC0000;">
+                    <p style="font-size:12px; color:#A32D2D; margin:0 0 4px;">Managers activos</p>
+                    <asp:Label ID="lblManagersActivos" runat="server" style="font-size:24px; font-weight:600; color:#A32D2D;">0</asp:Label>
+                </div>
+            </a>
+            <a href="/historial/Default.aspx?filtro=completados" class="tarjeta-dash">
+                <div style="background:#EAF3DE; border-radius:8px; padding:12px 16px; border-left:4px solid #639922;">
+                    <p style="font-size:12px; color:#3B6D11; margin:0 0 4px;">Completados hoy</p>
+                    <asp:Label ID="lblCompletadosHoy" runat="server" style="font-size:24px; font-weight:600; color:#3B6D11;">0</asp:Label>
+                </div>
+            </a>
+            <a href="/historial/Default.aspx?filtro=pendientes" class="tarjeta-dash">
+                <div style="background:#FFF3CD; border-radius:8px; padding:12px 16px; border-left:4px solid #F0A500;">
+                    <p style="font-size:12px; color:#7A5100; margin:0 0 4px;">Pendientes hoy</p>
+                    <asp:Label ID="lblPendientesHoy" runat="server" style="font-size:24px; font-weight:600; color:#7A5100;">0</asp:Label>
+                </div>
+            </a>
         </div>
-    </a>
-    <a href="/historial/Default.aspx?filtro=completados" class="tarjeta-dash">
-        <div style="background:#EAF3DE; border-radius:8px; padding:12px 16px; border-left:4px solid #639922;">
-            <p style="font-size:12px; color:#3B6D11; margin:0 0 4px;">Completados hoy</p>
-            <asp:Label ID="lblCompletadosHoy" runat="server" style="font-size:24px; font-weight:600; color:#3B6D11;">0</asp:Label>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:20px;">
+            <a href="/historial/Default.aspx" class="tarjeta-dash">
+                <div style="background:#E6F1FB; border-radius:8px; padding:12px 16px; border-left:4px solid #378ADD;">
+                    <p style="font-size:12px; color:#185FA5; margin:0 0 4px;">Cumplimiento semana</p>
+                    <asp:Label ID="lblCumplimiento" runat="server" style="font-size:24px; font-weight:600; color:#185FA5;">0%</asp:Label>
+                </div>
+            </a>
+            <a href="/historial/Default.aspx?filtro=hallazgos_abiertos" class="tarjeta-dash">
+                <div style="background:#FAEEDA; border-radius:8px; padding:12px 16px; border-left:4px solid #854F0B;">
+                    <p style="font-size:12px; color:#854F0B; margin:0 0 4px;">Hallazgos abiertos</p>
+                    <asp:Label ID="lblHallazgosAbiertos" runat="server" style="font-size:24px; font-weight:600; color:#854F0B;">0</asp:Label>
+                </div>
+            </a>
+            <a href="/historial/Default.aspx?filtro=hallazgos_cerrados" class="tarjeta-dash">
+                <div style="background:#EAF3DE; border-radius:8px; padding:12px 16px; border-left:4px solid #3B6D11;">
+                    <p style="font-size:12px; color:#3B6D11; margin:0 0 4px;">Hallazgos cerrados esta semana</p>
+                    <asp:Label ID="lblHallazgosCerrados" runat="server" style="font-size:24px; font-weight:600; color:#3B6D11;">0</asp:Label>
+                </div>
+            </a>
         </div>
-    </a>
-    <a href="/historial/Default.aspx?filtro=pendientes" class="tarjeta-dash">
-        <div style="background:#FFF3CD; border-radius:8px; padding:12px 16px; border-left:4px solid #F0A500;">
-            <p style="font-size:12px; color:#7A5100; margin:0 0 4px;">Pendientes hoy</p>
-            <asp:Label ID="lblPendientesHoy" runat="server" style="font-size:24px; font-weight:600; color:#7A5100;">0</asp:Label>
-        </div>
-    </a>
-</div>
+    </asp:Panel>
 
-<!-- Fila 2 tarjetas -->
-<div style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:20px;">
-    <a href="/historial/Default.aspx" class="tarjeta-dash">
-        <div style="background:#E6F1FB; border-radius:8px; padding:12px 16px; border-left:4px solid #378ADD;">
-            <p style="font-size:12px; color:#185FA5; margin:0 0 4px;">Cumplimiento semana</p>
-            <asp:Label ID="lblCumplimiento" runat="server" style="font-size:24px; font-weight:600; color:#185FA5;">0%</asp:Label>
+    <!-- Tarjetas Manager -->
+    <asp:Panel ID="pnlTarjetasManager" runat="server" Visible="false">
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:14px;">
+            <a href="/historial/Default.aspx" class="tarjeta-dash">
+                <div style="background:#EAF3DE; border-radius:8px; padding:12px 16px; border-left:4px solid #639922;">
+                    <p style="font-size:12px; color:#3B6D11; margin:0 0 4px;">Completados esta semana</p>
+                    <asp:Label ID="lblCompletadosSemana" runat="server" style="font-size:24px; font-weight:600; color:#3B6D11;">0/4</asp:Label>
+                </div>
+            </a>
+            <a href="/historial/Default.aspx?filtro=pendientes" class="tarjeta-dash">
+                <div style="background:#FFF3CD; border-radius:8px; padding:12px 16px; border-left:4px solid #F0A500;">
+                    <p style="font-size:12px; color:#7A5100; margin:0 0 4px;">Pendientes esta semana</p>
+                    <asp:Label ID="lblPendientesSemana" runat="server" style="font-size:24px; font-weight:600; color:#7A5100;">0/4</asp:Label>
+                </div>
+            </a>
+            <a href="/historial/Default.aspx" class="tarjeta-dash">
+                <div style="background:#E6F1FB; border-radius:8px; padding:12px 16px; border-left:4px solid #378ADD;">
+                    <p style="font-size:12px; color:#185FA5; margin:0 0 4px;">Cumplimiento semana</p>
+                    <asp:Label ID="lblCumplimientoManager" runat="server" style="font-size:24px; font-weight:600; color:#185FA5;">0%</asp:Label>
+                </div>
+            </a>
         </div>
-    </a>
-    <a href="/historial/Default.aspx?filtro=hallazgos_abiertos" class="tarjeta-dash">
-        <div style="background:#FAEEDA; border-radius:8px; padding:12px 16px; border-left:4px solid #854F0B;">
-            <p style="font-size:12px; color:#854F0B; margin:0 0 4px;">Hallazgos abiertos</p>
-            <asp:Label ID="lblHallazgosAbiertos" runat="server" style="font-size:24px; font-weight:600; color:#854F0B;">0</asp:Label>
+        <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin-bottom:20px;">
+            <a href="/historial/Default.aspx?filtro=hallazgos_abiertos" class="tarjeta-dash">
+                <div style="background:#FAEEDA; border-radius:8px; padding:12px 16px; border-left:4px solid #854F0B;">
+                    <p style="font-size:12px; color:#854F0B; margin:0 0 4px;">Hallazgos abiertos</p>
+                    <asp:Label ID="lblHallazgosAbiertosManager" runat="server" style="font-size:24px; font-weight:600; color:#854F0B;">0</asp:Label>
+                </div>
+            </a>
+            <a href="/historial/Default.aspx?filtro=hallazgos_cerrados" class="tarjeta-dash">
+                <div style="background:#EAF3DE; border-radius:8px; padding:12px 16px; border-left:4px solid #3B6D11;">
+                    <p style="font-size:12px; color:#3B6D11; margin:0 0 4px;">Hallazgos cerrados esta semana</p>
+                    <asp:Label ID="lblHallazgosCerradosManager" runat="server" style="font-size:24px; font-weight:600; color:#3B6D11;">0</asp:Label>
+                </div>
+            </a>
         </div>
-    </a>
-    <a href="/historial/Default.aspx?filtro=hallazgos_cerrados" class="tarjeta-dash">
-        <div style="background:#EAF3DE; border-radius:8px; padding:12px 16px; border-left:4px solid #3B6D11;">
-            <p style="font-size:12px; color:#3B6D11; margin:0 0 4px;">Hallazgos cerrados esta semana</p>
-            <asp:Label ID="lblHallazgosCerrados" runat="server" style="font-size:24px; font-weight:600; color:#3B6D11;">0</asp:Label>
-        </div>
-    </a>
-</div>
+    </asp:Panel>
 
     <!-- Tabla managers -->
     <div style="background:#fff; border:1px solid #e8e8e8; border-radius:8px; padding:20px; margin-bottom:20px;">
         <p style="font-size:14px; font-weight:500; margin:0 0 14px;">Estado por manager esta semana</p>
-        <asp:GridView ID="gvManagers" runat="server" AutoGenerateColumns="false" 
+        <asp:GridView ID="gvManagers" runat="server" AutoGenerateColumns="false"
             CssClass="table" Width="100%" GridLines="None">
             <Columns>
                 <asp:BoundField DataField="Nombre" HeaderText="Manager" />

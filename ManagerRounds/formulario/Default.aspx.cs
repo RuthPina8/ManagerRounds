@@ -22,6 +22,21 @@ namespace ManagerRounds.formulario
                 lblNombreManager.Text = Session["nombreUsuario"].ToString();
                 lblEstatus.Text = "En progreso";
 
+                // Modo editar
+                string editarCheckId = Request.QueryString["editar"];
+                string editarRevId = Request.QueryString["revid"];
+                if (!string.IsNullOrEmpty(editarCheckId) && !string.IsNullOrEmpty(editarRevId))
+                {
+                    string checkNumero = editarCheckId.Substring(0, 1);
+                    string tipoCheck = editarCheckId.Substring(1, 1);
+                    Session["checkNumero"] = checkNumero;
+                    Session["editarRevisionId"] = editarRevId;
+                    pnlRecuperacion.Visible = false;
+                    CargarFormulario(tipoCheck);
+                    return;
+                }
+
+                // Modo corregir
                 string corregirCheckId = Request.QueryString["corregir"];
                 if (!string.IsNullOrEmpty(corregirCheckId))
                 {
@@ -121,6 +136,61 @@ namespace ManagerRounds.formulario
             Session["checkId"] = checkId;
             Session["tipoCheck"] = tipoCheck;
 
+            // Modo editar
+            string editarRevId = Session["editarRevisionId"]?.ToString();
+            if (!string.IsNullOrEmpty(editarRevId))
+            {
+                int editRevisionId = int.Parse(editarRevId);
+                hfRevisionId.Value = editRevisionId.ToString();
+                lblEstatus.Text = "Editando";
+
+                var preguntas = control.GetPreguntas(checkNumero, tipoCheck);
+                var respuestasAnteriores = Control.Control.GetRespuestas(editRevisionId);
+
+                rptPreguntas.DataSource = preguntas;
+                rptPreguntas.DataBind();
+
+                foreach (RepeaterItem item in rptPreguntas.Items)
+                {
+                    var fu1 = (System.Web.UI.WebControls.FileUpload)item.FindControl("fuFotoProblema");
+                    var fu2 = (System.Web.UI.WebControls.FileUpload)item.FindControl("fuFotoCierre");
+                    if (fu1 != null) fu1.Attributes["capture"] = "environment";
+                    if (fu2 != null) fu2.Attributes["capture"] = "environment";
+                }
+
+                foreach (RepeaterItem item in rptPreguntas.Items)
+                {
+                    var hfPreguntaId = (HiddenField)item.FindControl("hfPreguntaId");
+                    var rblRespuesta = (RadioButtonList)item.FindControl("rblRespuesta");
+                    var chkSinComentario = (CheckBox)item.FindControl("chkSinComentario");
+                    var txtComentario = (TextBox)item.FindControl("txtComentario");
+
+                    int preguntaId = Convert.ToInt32(hfPreguntaId.Value);
+                    var respAnterior = respuestasAnteriores.FirstOrDefault(r => r.Pregunta_id == preguntaId);
+
+                    if (respAnterior != null)
+                    {
+                        rblRespuesta.SelectedValue = respAnterior.Respuesta_id.ToString();
+                        if (respAnterior.Comentario == "Sin comentario")
+                        {
+                            chkSinComentario.Checked = true;
+                            txtComentario.Text = "";
+                        }
+                        else
+                        {
+                            txtComentario.Text = respAnterior.Comentario ?? "";
+                        }
+                    }
+                }
+
+                lblRespondidas.Text = preguntas.Count + " / " + preguntas.Count;
+                pnlFormulario.Visible = true;
+                pnlYaCompletado.Visible = false;
+                pnlCorrigiendo.Visible = false;
+                return;
+            }
+
+            // Modo corregir
             var rechazado = Control.Control.GetRevisionRechazada(usuarioId, checkId);
             if (rechazado != null)
             {
@@ -211,11 +281,6 @@ namespace ManagerRounds.formulario
             }
         }
 
-
-
-
-
-
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
             int usuarioId = Convert.ToInt32(Session["idUsuario"]);
@@ -234,9 +299,15 @@ namespace ManagerRounds.formulario
             }
 
             int revisionId;
-            bool esCorreccion = hfRevisionId.Value != "0";
+            bool esEdicion = Session["editarRevisionId"] != null;
+            bool esCorreccion = !esEdicion && hfRevisionId.Value != "0";
 
-            if (!esCorreccion)
+            if (esEdicion)
+            {
+                revisionId = int.Parse(Session["editarRevisionId"].ToString());
+                Session.Remove("editarRevisionId");
+            }
+            else if (!esCorreccion)
             {
                 var rechazadoEnBD = Control.Control.GetRevisionRechazada(usuarioId, checkId);
                 if (rechazadoEnBD != null)
@@ -274,22 +345,19 @@ namespace ManagerRounds.formulario
 
                 control.GuardarRespuesta(revisionId, preguntaId, respuestaId, comentario, sinComentario);
 
-                // Obtener el id de la respuesta recién guardada
                 var respGuardada = Control.Control.GetRespuestas(revisionId)
                     .FirstOrDefault(r => r.Pregunta_id == preguntaId);
 
                 if (respGuardada != null)
                 {
-                    // Guardar foto del problema si es Falla
-                    if (respuestaId == 2 && fuFotoProblema.HasFile)
+                    if (respuestaId == 2 && fuFotoProblema != null && fuFotoProblema.HasFile)
                     {
                         string rutaProblema = Control.Control.SubirFoto(
                             fuFotoProblema.PostedFile, revisionId, preguntaId, "problema", serverPath);
                         Control.Control.GuardarFotoProblema(respGuardada.id, rutaProblema);
                     }
 
-                    // Guardar foto de cierre si se subió
-                    if (fuFotoCierre.HasFile)
+                    if (fuFotoCierre != null && fuFotoCierre.HasFile)
                     {
                         string rutaCierre = Control.Control.SubirFoto(
                             fuFotoCierre.PostedFile, revisionId, preguntaId, "cierre", serverPath);
@@ -298,7 +366,11 @@ namespace ManagerRounds.formulario
                 }
             }
 
-            if (esCorreccion)
+            if (esEdicion)
+            {
+                control.RecalcularCalificacion(revisionId);
+            }
+            else if (esCorreccion)
             {
                 Control.Control.CambiarEstatusRevision(revisionId, 4, "");
                 control.RecalcularCalificacion(revisionId);
@@ -309,7 +381,7 @@ namespace ManagerRounds.formulario
             }
 
             var revision = Control.Control.GetRevision(revisionId);
-            if (revision != null && revision.Calificacion.HasValue)
+            if (revision != null && revision.Calificacion.HasValue && !esEdicion)
             {
                 Control.Control.NotificarRevisor(
                     Session["nombreUsuario"].ToString(),
@@ -325,7 +397,7 @@ namespace ManagerRounds.formulario
             hfRevisionId.Value = "0";
             pnlFormulario.Visible = false;
             pnlYaCompletado.Visible = true;
-            lblEstatus.Text = esCorreccion ? "Corregido" : "Completado";
+            lblEstatus.Text = esEdicion ? "Editado" : esCorreccion ? "Corregido" : "Completado";
         }
     }
 }
