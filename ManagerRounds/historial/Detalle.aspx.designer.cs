@@ -69,6 +69,15 @@ namespace ManagerRounds.historial
         protected global::System.Web.UI.WebControls.Label lblCalificacion;
 
         /// <summary>
+        /// Control lblHallazgosPendientes.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblHallazgosPendientes;
+
+        /// <summary>
         /// Control lblEstatus.
         /// </summary>
         /// <remarks>
@@ -76,6 +85,24 @@ namespace ManagerRounds.historial
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblEstatus;
+
+        /// <summary>
+        /// Control panelCerrarHallazgos.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel panelCerrarHallazgos;
+
+        /// <summary>
+        /// Control rptHallazgosAbiertos.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptHallazgosAbiertos;
 
         /// <summary>
         /// Control gvRespuestas.
@@ -121,5 +148,23 @@ namespace ManagerRounds.historial
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnRechazar;
+
+        /// <summary>
+        /// Control panelCorregir.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel panelCorregir;
+
+        /// <summary>
+        /// Control btnCorregir.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnCorregir;
     }
 }

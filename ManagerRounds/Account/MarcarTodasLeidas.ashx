@@ -1,0 +1,1 @@
+﻿<%@ WebHandler Language="C#" CodeBehind="MarcarTodasLeidas.ashx.cs" Class="ManagerRounds.Account.MarcarTodasLeidas" %>

@@ -130,7 +130,10 @@
             </div>
 
             <asp:Button ID="btnLogin" runat="server" Text="Iniciar sesión" CssClass="btn-login" OnClick="btnLogin_Click" />
-            <center><h6>Astemo · MXQRP1</h6></center>
+            <div style="text-align:center; margin-top:12px;">
+    <a href="/Account/Recuperar.aspx" style="font-size:12px; color:#CC0000; text-decoration:none;">¿Olvidaste tu contraseña?</a>
+</div>
+            <center><p style="font-size:11px; color:#bbb; margin-top:12px;">Astemo · MXQRP1</p></center>
         </div>
             
     </form>

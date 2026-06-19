@@ -8,9 +8,11 @@ namespace ManagerRounds.admin
 {
     public partial class Preguntas : System.Web.UI.Page
     {
+        private const int PageSize = 15;
+
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Session["rol"] == null || Session["rol"].ToString() != "Revisor")
+            if (Session["rol"] == null || Session["rol"].ToString() != "Admin")
                 Response.Redirect("~/Account/Login.aspx");
 
             if (!IsPostBack)
@@ -20,7 +22,7 @@ namespace ManagerRounds.admin
             }
         }
 
-        private void CargarPreguntas()
+        private void CargarPreguntas(int pageIndex = 0)
         {
             string checkId = ddlFiltroCheck.SelectedValue;
             int? clasificacionId = string.IsNullOrEmpty(ddlFiltroClasificacion.SelectedValue) ? (int?)null : int.Parse(ddlFiltroClasificacion.SelectedValue);
@@ -36,8 +38,29 @@ namespace ManagerRounds.admin
             if (!string.IsNullOrEmpty(buscar))
                 preguntas = preguntas.Where(p => p.Pregunta.ToLower().Contains(buscar)).ToList();
 
-            gvPreguntas.DataSource = preguntas;
+            int totalRegistros = preguntas.Count;
+            int totalPaginas = (int)Math.Ceiling((double)totalRegistros / PageSize);
+
+            if (pageIndex < 0) pageIndex = 0;
+            if (pageIndex >= totalPaginas && totalPaginas > 0) pageIndex = totalPaginas - 1;
+
+            ViewState["PageIndex"] = pageIndex;
+            ViewState["TotalPaginas"] = totalPaginas;
+            ViewState["TotalRegistros"] = totalRegistros;
+
+            var paginado = preguntas.Skip(pageIndex * PageSize).Take(PageSize).ToList();
+
+            gvPreguntas.DataSource = paginado;
             gvPreguntas.DataBind();
+
+            ActualizarPaginacion(pageIndex, totalPaginas, totalRegistros);
+        }
+
+        private void ActualizarPaginacion(int pageIndex, int totalPaginas, int totalRegistros)
+        {
+            lblPaginacion.Text = $"Página {pageIndex + 1} de {totalPaginas} · {totalRegistros} preguntas";
+            btnPagAnterior.Enabled = pageIndex > 0;
+            btnPagSiguiente.Enabled = pageIndex < totalPaginas - 1;
         }
 
         private void CargarChecks()
@@ -60,17 +83,30 @@ namespace ManagerRounds.admin
 
         protected void btnFiltrar_Click(object sender, EventArgs e)
         {
-            CargarPreguntas();
+            CargarPreguntas(0);
+        }
+
+        protected void btnPagAnterior_Click(object sender, EventArgs e)
+        {
+            int pageIndex = (int)(ViewState["PageIndex"] ?? 0);
+            CargarPreguntas(pageIndex - 1);
+        }
+
+        protected void btnPagSiguiente_Click(object sender, EventArgs e)
+        {
+            int pageIndex = (int)(ViewState["PageIndex"] ?? 0);
+            CargarPreguntas(pageIndex + 1);
         }
 
         protected void gvPreguntas_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             int id = int.Parse(e.CommandArgument.ToString());
+            int pageIndex = (int)(ViewState["PageIndex"] ?? 0);
 
             if (e.CommandName == "Toggle")
             {
                 Control.Control.TogglePregunta(id);
-                CargarPreguntas();
+                CargarPreguntas(pageIndex);
                 CargarChecks();
             }
             else if (e.CommandName == "Editar")
@@ -84,7 +120,7 @@ namespace ManagerRounds.admin
                 ddlCheck.SelectedValue = p.Check_id;
                 ddlClasificacion.SelectedValue = p.Clasificacion_id.ToString();
 
-                CargarPreguntas();
+                CargarPreguntas(pageIndex);
                 CargarChecks();
 
                 ScriptManager.RegisterStartupScript(this, GetType(), "abrirModal",
@@ -101,7 +137,7 @@ namespace ManagerRounds.admin
             else if (e.CommandName == "DesactivarCheck")
                 Control.Control.ToggleCheck(checkId, false);
 
-            CargarPreguntas();
+            CargarPreguntas(0);
             CargarChecks();
         }
 
@@ -120,7 +156,6 @@ namespace ManagerRounds.admin
                 return;
             }
 
-            // TipoArea: A = Productiva (1), B = Almacenes (2)
             int tipoAreaId = checkId.EndsWith("A") ? 1 : 2;
 
             if (id == 0)
@@ -134,7 +169,7 @@ namespace ManagerRounds.admin
                 MostrarMensaje("Pregunta actualizada correctamente.", "alert-success");
             }
 
-            CargarPreguntas();
+            CargarPreguntas((int)(ViewState["PageIndex"] ?? 0));
             CargarChecks();
         }
 
@@ -143,6 +178,16 @@ namespace ManagerRounds.admin
             lblMensaje.Text = texto;
             lblMensaje.CssClass = "alert " + clase + " d-block mb-3";
             lblMensaje.Visible = true;
+        }
+
+        protected void gvPreguntas_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                var pregunta = (Datos.Preguntas)e.Row.DataItem;
+                if (!pregunta.Activo)
+                    e.Row.CssClass += " inactiva";
+            }
         }
     }
 }

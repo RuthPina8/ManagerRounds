@@ -33,6 +33,33 @@ namespace ManagerRounds.admin
         protected global::System.Web.UI.WebControls.GridView gvUsuarios;
 
         /// <summary>
+        /// Control lblPaginacion.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblPaginacion;
+
+        /// <summary>
+        /// Control btnPagAnterior.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnPagAnterior;
+
+        /// <summary>
+        /// Control btnPagSiguiente.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnPagSiguiente;
+
+        /// <summary>
         /// Control lblTituloModal.
         /// </summary>
         /// <remarks>
@@ -69,6 +96,15 @@ namespace ManagerRounds.admin
         protected global::System.Web.UI.WebControls.TextBox txtNomina;
 
         /// <summary>
+        /// Control txtEmail.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtEmail;
+
+        /// <summary>
         /// Control txtPassword.
         /// </summary>
         /// <remarks>
@@ -87,13 +123,13 @@ namespace ManagerRounds.admin
         protected global::System.Web.UI.WebControls.DropDownList ddlRol;
 
         /// <summary>
-        /// Control txtSeccion.
+        /// Control ddlSeccion.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtSeccion;
+        protected global::System.Web.UI.WebControls.DropDownList ddlSeccion;
 
         /// <summary>
         /// Control ddlTipoArea.

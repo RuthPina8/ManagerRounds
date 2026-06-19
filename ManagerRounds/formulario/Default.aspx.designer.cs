@@ -15,6 +15,15 @@ namespace ManagerRounds.formulario
     {
 
         /// <summary>
+        /// Control hfRevisionId.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hfRevisionId;
+
+        /// <summary>
         /// Control lblFecha.
         /// </summary>
         /// <remarks>
@@ -51,6 +60,15 @@ namespace ManagerRounds.formulario
         protected global::System.Web.UI.WebControls.Label lblRespondidas;
 
         /// <summary>
+        /// Control pnlSelectorCheck.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlSelectorCheck;
+
+        /// <summary>
         /// Control btnCheckA.
         /// </summary>
         /// <remarks>
@@ -67,6 +85,42 @@ namespace ManagerRounds.formulario
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnCheckB;
+
+        /// <summary>
+        /// Control pnlRecuperacion.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlRecuperacion;
+
+        /// <summary>
+        /// Control rptChecksPendientes.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptChecksPendientes;
+
+        /// <summary>
+        /// Control pnlAlCorriente.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlAlCorriente;
+
+        /// <summary>
+        /// Control pnlCorrigiendo.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlCorrigiendo;
 
         /// <summary>
         /// Control pnlFormulario.

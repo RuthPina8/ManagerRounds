@@ -29,7 +29,12 @@ namespace ManagerRounds.Account
                 Session["idUsuario"] = usuario.id;
                 Session["nombreUsuario"] = usuario.Nombre;
                 Session["rol"] = usuario.Roles.Rol;
-                Response.Redirect("/dashboard/Default.aspx");
+
+                // Si no tiene pregunta configurada, redirigir a configurar
+                if (string.IsNullOrEmpty(usuario.PreguntaRecuperacion))
+                    Response.Redirect("/Account/Configurar.aspx");
+                else
+                    Response.Redirect("/dashboard/Default.aspx");
             }
             else
             {

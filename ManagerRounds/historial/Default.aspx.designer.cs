@@ -51,24 +51,6 @@ namespace ManagerRounds.historial
         protected global::System.Web.UI.WebControls.LinkButton btnSiguiente;
 
         /// <summary>
-        /// Control tabRevisiones.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton tabRevisiones;
-
-        /// <summary>
-        /// Control tabBitacora.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton tabBitacora;
-
-        /// <summary>
         /// Control hfTab.
         /// </summary>
         /// <remarks>
@@ -85,6 +67,24 @@ namespace ManagerRounds.historial
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hfLunes;
+
+        /// <summary>
+        /// Control tabRevisiones.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton tabRevisiones;
+
+        /// <summary>
+        /// Control tabBitacora.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton tabBitacora;
 
         /// <summary>
         /// Control panelRevisiones.

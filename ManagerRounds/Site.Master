@@ -26,98 +26,169 @@
         .topbar {
             position: fixed;
             top: 0; left: 0; right: 0;
-            height: 50px;
-            background: #1a1a1a;
+            height: 56px;
+            background: #fff;
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 0 20px;
             z-index: 1000;
-            border-bottom: 3px solid var(--astemo-red);
+            border-bottom: 1px solid #e8e8e8;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
         }
 
         .topbar-brand {
-            color: #fff;
-            font-size: 16px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-
-        .topbar-brand span { color: var(--astemo-red); }
-
-        .topbar-user {
-            color: #ccc;
-            font-size: 13px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            color: #1a1a1a;
+            letter-spacing: 0.3px;
         }
 
-        .perfil-dropdown {
+        .topbar-brand .brand-divider { color: #ddd; font-weight: 300; font-size: 18px; }
+        .topbar-brand .site-name { font-size: 13px; font-weight: 400; color: #888; }
+        .topbar-brand .rounds { color: var(--astemo-red); }
+
+        .topbar-actions { display: flex; align-items: center; gap: 4px; }
+
+        .topbar-icon-btn {
+            width: 36px; height: 36px;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            color: #666;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s;
             position: relative;
-            display: inline-block;
         }
+
+        .topbar-icon-btn:hover { background: #f4f6f8; color: #333; }
+
+        .notif-badge {
+            position: absolute;
+            top: 4px; right: 4px;
+            width: 16px; height: 16px;
+            background: var(--astemo-red);
+            color: #fff;
+            border-radius: 50%;
+            font-size: 9px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .topbar-divider { width: 1px; height: 24px; background: #e8e8e8; margin: 0 8px; }
+
+        .notif-dropdown { position: relative; display: inline-block; }
+
+        .notif-menu {
+            display: none;
+            position: absolute;
+            right: 0; top: 42px;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            min-width: 320px;
+            z-index: 2000;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        }
+
+        .notif-menu.open { display: block; }
+
+        .notif-header {
+            padding: 14px 16px 10px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .notif-header span { font-size: 13px; font-weight: 600; color: #222; }
+        .notif-header a { font-size: 12px; color: var(--astemo-red); text-decoration: none; }
+
+        .notif-item {
+            padding: 10px 16px;
+            border-bottom: 1px solid #f8f8f8;
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+
+        .notif-item:hover { background: #f8f8f8; }
+        .notif-item.no-leida { background: #fff8f8; }
+        .notif-item p { font-size: 12px; color: #444; margin: 0 0 2px; line-height: 1.4; }
+        .notif-item small { font-size: 11px; color: #aaa; }
+
+        .notif-empty { padding: 24px 16px; text-align: center; font-size: 13px; color: #aaa; }
+
+        .perfil-dropdown { position: relative; display: inline-block; }
 
         .perfil-trigger {
             cursor: pointer;
-            color: #ccc;
+            color: #444;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            padding: 6px 10px;
+            border-radius: 8px;
+            transition: background 0.15s;
         }
 
-        .perfil-trigger:hover { color: #fff; }
+        .perfil-trigger:hover { background: #f4f6f8; }
+        .perfil-trigger .nombre { font-size: 13px; font-weight: 500; color: #333; }
+        .perfil-trigger .rol-badge { font-size: 11px; color: #888; }
 
         .perfil-dropdown-menu {
             display: none;
             position: absolute;
-            right: 0;
-            top: 34px;
+            right: 0; top: 44px;
             background: #fff;
             border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            min-width: 160px;
+            border-radius: 8px;
+            min-width: 180px;
             z-index: 2000;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
         .perfil-dropdown-menu.open { display: block; }
 
         .perfil-dropdown-menu a {
-            display: block;
+            display: flex;
+            align-items: center;
+            gap: 10px;
             padding: 10px 14px;
             font-size: 13px;
             color: #444;
             text-decoration: none;
         }
 
-        .perfil-dropdown-menu a:hover {
-            background: #f4f6f8;
-            color: #222;
-        }
-
-        .perfil-dropdown-menu .divider-menu {
-            border-top: 1px solid #f0f0f0;
-        }
+        .perfil-dropdown-menu a:hover { background: #f4f6f8; color: #222; }
+        .perfil-dropdown-menu .divider-menu { border-top: 1px solid #f0f0f0; }
 
         .sidebar {
             position: fixed;
-            top: 50px; left: 0;
+            top: 56px; left: 0;
             width: var(--sidebar-width);
-            height: calc(100vh - 50px);
+            height: calc(100vh - 56px);
             background: #fff;
-            border-right: 1px solid #e0e0e0;
+            border-right: 1px solid #e8e8e8;
             overflow-y: auto;
             z-index: 999;
         }
 
         .sidebar-section {
             padding: 16px 16px 4px;
-            font-size: 11px;
-            font-weight: 600;
-            color: #999;
+            font-size: 10px;
+            font-weight: 700;
+            color: #bbb;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.1em;
         }
 
         .sidebar-item {
@@ -125,54 +196,31 @@
             align-items: center;
             gap: 10px;
             padding: 9px 16px;
-            color: #444;
+            color: #555;
             text-decoration: none;
             font-size: 13px;
             transition: background 0.15s;
             cursor: pointer;
         }
 
-        .sidebar-item:hover {
-            background: #f4f6f8;
-            color: #222;
-            text-decoration: none;
-        }
+        .sidebar-item:hover { background: #f4f6f8; color: #222; text-decoration: none; }
 
         .sidebar-item.active {
-            background: #fdeaea;
+            background: #fff0f0;
             color: var(--astemo-red);
-            font-weight: 500;
+            font-weight: 600;
             border-right: 3px solid var(--astemo-red);
         }
 
-        .sidebar-item i {
-            width: 18px;
-            text-align: center;
-            font-size: 14px;
-            color: #888;
-        }
-
+        .sidebar-item i { width: 18px; text-align: center; font-size: 14px; color: #bbb; }
         .sidebar-item.active i { color: var(--astemo-red); }
+        .sidebar-item:hover i { color: #666; }
 
-        .sidebar-submenu {
-            display: none;
-            background: #fafafa;
-        }
-
+        .sidebar-submenu { display: none; background: #fafafa; }
         .sidebar-submenu.open { display: block; }
+        .sidebar-submenu .sidebar-item { padding-left: 44px; font-size: 12px; }
 
-        .sidebar-submenu .sidebar-item {
-            padding-left: 44px;
-            font-size: 12px;
-        }
-
-        .sidebar-toggle {
-            margin-left: auto;
-            font-size: 11px;
-            color: #bbb;
-            transition: transform 0.2s;
-        }
-
+        .sidebar-toggle { margin-left: auto; font-size: 11px; color: #ccc; transition: transform 0.2s; }
         .sidebar-toggle.open { transform: rotate(180deg); }
 
         .sidebar-footer {
@@ -183,17 +231,13 @@
             text-align: center;
         }
 
-        .sidebar-footer p {
-            font-size: 11px;
-            color: #bbb;
-            margin: 4px 0 0;
-        }
+        .sidebar-footer p { font-size: 11px; color: #ccc; margin: 4px 0 0; }
 
         .main-content {
             margin-left: var(--sidebar-width);
-            margin-top: 50px;
+            margin-top: 56px;
             padding: 24px;
-            min-height: calc(100vh - 50px);
+            min-height: calc(100vh - 56px);
         }
 
         .card-mr {
@@ -202,16 +246,6 @@
             border-radius: 8px;
             padding: 20px;
             margin-bottom: 20px;
-        }
-
-        .card-mr-header {
-            border-top: 4px solid var(--astemo-red);
-            border-radius: 8px 8px 0 0;
-            background: #fff;
-            padding: 16px 20px;
-            border-left: 1px solid #e8e8e8;
-            border-right: 1px solid #e8e8e8;
-            margin-bottom: 0;
         }
 
         .badge-cumple    { background: #EAF3DE; color: #3B6D11; }
@@ -235,10 +269,7 @@
             cursor: pointer;
         }
 
-        .btn-astemo:hover {
-            background: #aa0000;
-            color: #fff;
-        }
+        .btn-astemo:hover { background: #aa0000; color: #fff; }
     </style>
 
     <asp:ContentPlaceHolder ID="head" runat="server"></asp:ContentPlaceHolder>
@@ -246,21 +277,71 @@
 <body>
 
     <div class="topbar">
-        <div class="topbar-brand">MANAGER <span>ROUNDS</span></div>
-        <div class="topbar-user">
+        <div class="topbar-brand">
+            <img src="/Content/astemo-logo.png" alt="Astemo" style="height:28px;" onerror="this.style.display='none'" />
+            <span class="brand-divider">|</span>
+            <span>MANAGER <span class="rounds">ROUNDS</span></span>
+            <span class="site-name">MXQRP1</span>
+        </div>
+
+        <div class="topbar-actions">
+            <button class="topbar-icon-btn" title="Ayuda" onclick="alert('Manual de usuario próximamente.')">
+                <i class="fas fa-question-circle"></i>
+            </button>
+
+            <div class="notif-dropdown">
+                <button class="topbar-icon-btn" id="btnNotif" onclick="toggleNotif()" title="Notificaciones">
+                    <i class="fas fa-bell"></i>
+                    <% if (NotificacionesNoLeidas > 0) { %>
+                    <span class="notif-badge"><%= NotificacionesNoLeidas %></span>
+                    <% } %>
+                </button>
+                <div class="notif-menu" id="notifMenu">
+                    <div class="notif-header">
+                        <span>Notificaciones</span>
+                        <div style="display:flex; gap:8px;">
+                            <a href="#" onclick="marcarTodasLeidas(); return false;" style="font-size:12px; color:#CC0000; text-decoration:none;">Marcar leídas</a>
+                            <a href="#" onclick="borrarNotificaciones(); return false;" style="font-size:12px; color:#aaa; text-decoration:none;">Borrar todo</a>
+                        </div>
+                    </div>
+                    <div id="notifLista">
+                        <% if (Notificaciones.Count == 0) { %>
+                        <div class="notif-empty">
+                            <i class="fas fa-bell-slash" style="font-size:24px; margin-bottom:8px; display:block;"></i>
+                            Sin notificaciones
+                        </div>
+                        <% } %>
+                        <asp:Repeater ID="rptNotificaciones" runat="server">
+                            <ItemTemplate>
+                                <div class="notif-item <%# !(bool)Eval("Leida") ? "no-leida" : "" %>"
+                                     onclick="irNotif(<%# Eval("id") %>, '<%# Eval("Url") ?? "#" %>')">
+                                    <p><%# Eval("Mensaje") %></p>
+                                    <small><%# ((DateTime)Eval("FechaCreacion")).ToString("ddd dd MMM · hh:mm tt") %></small>
+                                </div>
+                            </ItemTemplate>
+                        </asp:Repeater>
+                    </div>
+                </div>
+            </div>
+
+            <div class="topbar-divider"></div>
+
             <div class="perfil-dropdown">
                 <div class="perfil-trigger" onclick="togglePerfil()">
-                    <i class="fas fa-user-circle"></i>
-                    <%= Session["nombreUsuario"] %>
-                    <i class="fas fa-chevron-down" style="font-size:11px;"></i>
+                    <i class="fas fa-user-circle" style="font-size:20px; color:#bbb;"></i>
+                    <div>
+                        <div class="nombre"><%= Session["nombreUsuario"] %></div>
+                        <div class="rol-badge"><%= Session["rol"] %></div>
+                    </div>
+                    <i class="fas fa-chevron-down" style="font-size:10px; color:#bbb;"></i>
                 </div>
                 <div class="perfil-dropdown-menu" id="perfilMenu">
                     <a href="/Account/Perfil.aspx" target="_blank">
-                        <i class="fas fa-user mr-2"></i> Ver perfil
+                        <i class="fas fa-user" style="color:#bbb;"></i> Mi perfil
                     </a>
                     <div class="divider-menu"></div>
                     <a href="/Account/Logout.aspx">
-                        <i class="fas fa-sign-out-alt mr-2"></i> Salir
+                        <i class="fas fa-sign-out-alt" style="color:#bbb;"></i> Salir
                     </a>
                 </div>
             </div>
@@ -279,7 +360,7 @@
             <i class="fas fa-history"></i> Historial
         </a>
 
-        <% if (Session["rol"] != null && Session["rol"].ToString() == "Revisor") { %>
+        <% if (Session["rol"] != null && (Session["rol"].ToString() == "Revisor" || Session["rol"].ToString() == "Admin")) { %>
         <div class="sidebar-section">Administración</div>
         <div class="sidebar-item" onclick="toggleMenu('menuAdmin')">
             <i class="fas fa-cog"></i> Configuración
@@ -290,7 +371,10 @@
                 <i class="fas fa-users"></i> Usuarios
             </a>
             <a class="sidebar-item" href="/admin/Preguntas.aspx">
-                <i class="fas fa-question-circle"></i> Preguntas
+                <i class="fas fa-clipboard-check"></i> Preguntas HSE
+            </a>
+            <a class="sidebar-item" href="/admin/Secciones.aspx">
+                <i class="fas fa-map-marker-alt"></i> Secciones
             </a>
         </div>
         <% } %>
@@ -302,7 +386,7 @@
     </div>
 
     <div class="main-content">
-        <form id="form1" runat="server">
+        <form id="form1" runat="server" enctype="multipart/form-data">
             <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server"></asp:ContentPlaceHolder>
         </form>
     </div>
@@ -313,14 +397,19 @@
     <script>
         function togglePerfil() {
             document.getElementById('perfilMenu').classList.toggle('open');
+            document.getElementById('notifMenu').classList.remove('open');
+        }
+
+        function toggleNotif() {
+            document.getElementById('notifMenu').classList.toggle('open');
+            document.getElementById('perfilMenu').classList.remove('open');
         }
 
         document.addEventListener('click', function (e) {
-            var dropdown = document.querySelector('.perfil-dropdown');
-            var menu = document.getElementById('perfilMenu');
-            if (menu && dropdown && !dropdown.contains(e.target)) {
-                menu.classList.remove('open');
-            }
+            if (!e.target.closest('.perfil-dropdown'))
+                document.getElementById('perfilMenu').classList.remove('open');
+            if (!e.target.closest('.notif-dropdown'))
+                document.getElementById('notifMenu').classList.remove('open');
         });
 
         function toggleMenu(id) {
@@ -330,12 +419,24 @@
             if (icon) icon.classList.toggle('open');
         }
 
+        function irNotif(id, url) {
+            fetch('/Account/MarcarLeida.ashx?id=' + id);
+            if (url && url !== '#') window.location.href = url;
+        }
+
+        function marcarTodasLeidas() {
+            window.location.href = '/Account/MarcarTodasLeidas.ashx';
+        }
+
+        function borrarNotificaciones() {
+            if (confirm('¿Borrar todas las notificaciones?'))
+                window.location.href = '/Account/BorrarNotificaciones.ashx';
+        }
+
         var path = window.location.pathname.toLowerCase();
-        var items = document.querySelectorAll('.sidebar-item');
-        items.forEach(function (item) {
-            if (item.href && path.indexOf(item.getAttribute('href').toLowerCase()) !== -1) {
+        document.querySelectorAll('.sidebar-item').forEach(function (item) {
+            if (item.href && path.indexOf(item.getAttribute('href').toLowerCase()) !== -1)
                 item.classList.add('active');
-            }
         });
     </script>
 

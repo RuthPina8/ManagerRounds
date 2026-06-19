@@ -2,6 +2,33 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
+<style>
+    .foto-hallazgo {
+        width: 80px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 6px;
+        cursor: pointer;
+        border: 1px solid #e8e8e8;
+        transition: transform 0.15s;
+    }
+    .foto-hallazgo:hover { transform: scale(1.08); box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+
+    .modal-foto {
+        display: none;
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0,0,0,0.85);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+    }
+    .modal-foto.open { display: flex; }
+    .modal-foto img { max-width: 90%; max-height: 90vh; border-radius: 8px; }
+    .modal-foto-close { position: absolute; top: 20px; right: 30px; color: #fff; font-size: 28px; cursor: pointer; }
+</style>
+
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h4 class="mb-0">Detalle de Revisión</h4>
     <a href="/historial/Default.aspx" class="btn btn-outline-secondary btn-sm">
@@ -34,6 +61,7 @@
             <div class="col-md-1">
                 <p class="text-muted mb-1" style="font-size:12px;">Calificación</p>
                 <asp:Label ID="lblCalificacion" runat="server" style="font-size:14px; font-weight:500;" />
+                <asp:Label ID="lblHallazgosPendientes" runat="server" style="font-size:11px; color:#F0A500; display:block;" />
             </div>
             <div class="col-md-1">
                 <p class="text-muted mb-1" style="font-size:12px;">Estatus</p>
@@ -42,6 +70,37 @@
         </div>
     </div>
 </div>
+
+<!-- Panel cerrar hallazgos -->
+<asp:Panel ID="panelCerrarHallazgos" runat="server" Visible="false">
+    <div class="card card-mr mb-3" style="border-left:4px solid #F0A500;">
+        <div class="card-body">
+            <p style="font-size:14px; font-weight:600; color:#854F0B; margin:0 0 14px;">
+                <i class="fas fa-exclamation-triangle mr-1"></i> Hallazgos pendientes de cierre
+            </p>
+            <asp:Repeater ID="rptHallazgosAbiertos" runat="server" OnItemCommand="rptHallazgosAbiertos_ItemCommand">
+                <ItemTemplate>
+                    <div style="background:#FAEEDA; border-radius:6px; padding:12px 14px; margin-bottom:10px; display:flex; align-items:center; gap:12px;">
+                        <img src='<%# ResolveUrl(Eval("FotoProblema").ToString()) %>'
+                            style="width:80px; height:60px; object-fit:cover; border-radius:6px; cursor:pointer; flex-shrink:0;"
+                            onclick='<%# "verFoto(\"" + ResolveUrl(Eval("FotoProblema").ToString()) + "\")" %>' />
+                        <div style="flex:1;">
+                            <p style="font-size:13px; font-weight:500; color:#854F0B; margin:0 0 6px;"><%# Eval("Preguntas.Pregunta") %></p>
+                            <p style="font-size:12px; color:#888; margin:0 0 6px;">Sube la evidencia de solución:</p>
+                            <asp:FileUpload ID="fuCierreHallazgo" runat="server" CssClass="form-control-file"
+                                style="font-size:12px;" accept="image/*" />
+                        </div>
+                        <asp:LinkButton runat="server" CommandName="CerrarHallazgo"
+                            CommandArgument='<%# Eval("id") %>'
+                            CssClass="btn btn-astemo btn-sm" style="flex-shrink:0;">
+                            <i class="fas fa-check mr-1"></i> Cerrar hallazgo
+                        </asp:LinkButton>
+                    </div>
+                </ItemTemplate>
+            </asp:Repeater>
+        </div>
+    </div>
+</asp:Panel>
 
 <!-- Respuestas -->
 <div class="card card-mr mb-3">
@@ -65,6 +124,11 @@
                 <asp:TemplateField HeaderText="Comentario">
                     <ItemTemplate><%# Eval("Comentario") %></ItemTemplate>
                 </asp:TemplateField>
+                <asp:TemplateField HeaderText="Hallazgo">
+                    <ItemTemplate>
+                        <%# RenderHallazgo(Eval("FotoProblema")?.ToString(), Eval("FotoCierre")?.ToString(), (bool)Eval("HallazgoCerrado"), Eval("TiposRespuesta.Respuesta").ToString()) %>
+                    </ItemTemplate>
+                </asp:TemplateField>
             </Columns>
         </asp:GridView>
     </div>
@@ -72,7 +136,7 @@
 
 <!-- Panel revisor -->
 <asp:Panel ID="panelRevisor" runat="server" Visible="false">
-    <div class="card card-mr">
+    <div class="card card-mr mb-3">
         <div class="card-body">
             <p style="font-size:14px; font-weight:500;" class="mb-3">Acción del Revisor</p>
             <div class="form-group">
@@ -86,5 +150,32 @@
         </div>
     </div>
 </asp:Panel>
+
+<!-- Panel corregir (Manager) -->
+<asp:Panel ID="panelCorregir" runat="server" Visible="false">
+    <div style="background:#FAEEDA; border-radius:8px; padding:16px 20px; display:flex; align-items:center; justify-content:space-between;">
+        <div>
+            <p style="font-weight:600; color:#854F0B; margin:0; font-size:14px;">Este formulario fue rechazado</p>
+            <p style="color:#854F0B; margin:4px 0 0; font-size:13px;">Puedes corregir las respuestas y reenviarlo.</p>
+        </div>
+        <asp:Button ID="btnCorregir" runat="server" Text="Corregir formulario" CssClass="btn btn-astemo" />
+    </div>
+</asp:Panel>
+
+<!-- Modal visor de foto -->
+<div class="modal-foto" id="modalFoto" onclick="cerrarFoto()">
+    <span class="modal-foto-close" onclick="cerrarFoto()">&times;</span>
+    <img id="imgModalFoto" src="" alt="Hallazgo" />
+</div>
+
+<script>
+    function verFoto(src) {
+        document.getElementById('imgModalFoto').src = src;
+        document.getElementById('modalFoto').classList.add('open');
+    }
+    function cerrarFoto() {
+        document.getElementById('modalFoto').classList.remove('open');
+    }
+</script>
 
 </asp:Content>

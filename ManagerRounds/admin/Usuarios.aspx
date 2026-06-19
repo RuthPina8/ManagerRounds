@@ -2,8 +2,36 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
+<style>
+    .table-usuarios tr:hover td { background: #fff5f5; }
+
+    .badge-rol-manager { background: #FAEEDA; color: #854F0B; border-radius: 20px; padding: 3px 10px; font-size: 12px; font-weight: 500; }
+    .badge-rol-revisor { background: #EEEDFE; color: #534AB7; border-radius: 20px; padding: 3px 10px; font-size: 12px; font-weight: 500; }
+    .badge-rol-admin   { background: #E6F1FB; color: #185FA5; border-radius: 20px; padding: 3px 10px; font-size: 12px; font-weight: 500; }
+
+    .btn-accion {
+        width: 30px; height: 30px;
+        border-radius: 6px;
+        border: 1px solid #e8e8e8;
+        background: #fff;
+        color: #888;
+        font-size: 14px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.15s;
+        margin-right: 4px;
+    }
+
+    .btn-accion:hover { background: #f4f6f8; color: #333; }
+</style>
+
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0">Gestión de Usuarios</h4>
+    <div>
+        <h4 style="font-weight:600; margin:0;">Gestión de Usuarios</h4>
+        <p style="font-size:13px; color:#888; margin:4px 0 0;">Managers, revisores y administradores del sistema</p>
+    </div>
     <button type="button" class="btn btn-astemo" data-toggle="modal" data-target="#modalUsuario" onclick="limpiarModal()">
         <i class="fas fa-plus mr-1"></i> Nuevo Usuario
     </button>
@@ -13,14 +41,29 @@
 
 <div class="card card-mr">
     <div class="card-body p-0">
-        <asp:GridView ID="gvUsuarios" runat="server" CssClass="table table-hover mb-0"
+        <asp:GridView ID="gvUsuarios" runat="server" CssClass="table table-usuarios mb-0"
             AutoGenerateColumns="false" DataKeyNames="id"
             OnRowCommand="gvUsuarios_RowCommand">
             <Columns>
-                <asp:BoundField DataField="Nomina" HeaderText="Nómina" />
-                <asp:BoundField DataField="Nombre" HeaderText="Nombre" />
+                <asp:TemplateField HeaderText="Nómina">
+                    <ItemTemplate>
+                        <span style="font-size:12px; color:#888; font-family:monospace;"><%# Eval("Nomina") %></span>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:TemplateField HeaderText="Nombre">
+                    <ItemTemplate>
+                        <span style="font-weight:500; font-size:13px;"><%# Eval("Nombre") %></span>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:TemplateField HeaderText="Correo">
+                    <ItemTemplate>
+                        <span style="font-size:12px; color:#888;"><%# Eval("Email") ?? "—" %></span>
+                    </ItemTemplate>
+                </asp:TemplateField>
                 <asp:TemplateField HeaderText="Rol">
-                    <ItemTemplate><%# Eval("Roles.Rol") %></ItemTemplate>
+                    <ItemTemplate>
+                        <span class='<%# GetBadgeRol(Eval("Roles.Rol").ToString()) %>'><%# Eval("Roles.Rol") %></span>
+                    </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="Estatus">
                     <ItemTemplate>
@@ -32,17 +75,26 @@
                 <asp:TemplateField HeaderText="Acciones">
                     <ItemTemplate>
                         <asp:LinkButton runat="server" CommandName="Editar" CommandArgument='<%# Eval("id") %>'
-                            CssClass="btn btn-sm btn-outline-secondary mr-1">
+                            CssClass="btn-accion" title="Editar usuario">
                             <i class="fas fa-edit"></i>
                         </asp:LinkButton>
                         <asp:LinkButton runat="server" CommandName="Toggle" CommandArgument='<%# Eval("id") %>'
-                            CssClass='<%# (bool)Eval("Activo") ? "btn btn-sm btn-outline-danger" : "btn btn-sm btn-outline-success" %>'>
+                            CssClass="btn-accion"
+                            title='<%# (bool)Eval("Activo") ? "Desactivar usuario" : "Activar usuario" %>'>
                             <i class='<%# (bool)Eval("Activo") ? "fas fa-user-slash" : "fas fa-user-check" %>'></i>
                         </asp:LinkButton>
                     </ItemTemplate>
                 </asp:TemplateField>
             </Columns>
         </asp:GridView>
+    </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mt-3">
+    <asp:Label ID="lblPaginacion" runat="server" style="font-size:12px; color:#888;" />
+    <div style="display:flex; gap:6px;">
+        <asp:Button ID="btnPagAnterior" runat="server" Text="← Anterior" CssClass="btn btn-outline-secondary btn-sm" OnClick="btnPagAnterior_Click" />
+        <asp:Button ID="btnPagSiguiente" runat="server" Text="Siguiente →" CssClass="btn btn-outline-secondary btn-sm" OnClick="btnPagSiguiente_Click" />
     </div>
 </div>
 
@@ -67,6 +119,10 @@
                     <asp:TextBox ID="txtNomina" runat="server" CssClass="form-control" MaxLength="20" />
                 </div>
                 <div class="form-group">
+                    <label>Correo electrónico</label>
+                    <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" MaxLength="100" placeholder="nombre@astemo.com" />
+                </div>
+                <div class="form-group">
                     <label>Contraseña <small class="text-muted">(dejar vacío para no cambiar)</small></label>
                     <asp:TextBox ID="txtPassword" runat="server" CssClass="form-control" TextMode="Password" MaxLength="50" />
                 </div>
@@ -75,12 +131,13 @@
                     <asp:DropDownList ID="ddlRol" runat="server" CssClass="form-control" onchange="toggleSeccion(this.value)">
                         <asp:ListItem Value="1">Manager</asp:ListItem>
                         <asp:ListItem Value="2">Revisor</asp:ListItem>
+                        <asp:ListItem Value="5">Admin</asp:ListItem>
                     </asp:DropDownList>
                 </div>
                 <div id="panelSeccion">
                     <div class="form-group">
                         <label>Sección</label>
-                        <asp:TextBox ID="txtSeccion" runat="server" CssClass="form-control" MaxLength="100" />
+                        <asp:DropDownList ID="ddlSeccion" runat="server" CssClass="form-control"></asp:DropDownList>
                     </div>
                     <div class="form-group">
                         <label>Tipo de área</label>
@@ -110,9 +167,9 @@
         document.getElementById('<%= lblTituloModal.ClientID %>').innerText = 'Nuevo Usuario';
         document.getElementById('<%= txtNombre.ClientID %>').value = '';
         document.getElementById('<%= txtNomina.ClientID %>').value = '';
+        document.getElementById('<%= txtEmail.ClientID %>').value = '';
         document.getElementById('<%= txtPassword.ClientID %>').value = '';
         document.getElementById('<%= ddlRol.ClientID %>').value = '1';
-        document.getElementById('<%= txtSeccion.ClientID %>').value = '';
         document.getElementById('<%= ddlTipoArea.ClientID %>').value = '1';
         toggleSeccion('1');
     }

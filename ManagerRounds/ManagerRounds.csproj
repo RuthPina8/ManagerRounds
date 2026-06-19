@@ -81,8 +81,11 @@
     <Content Include="Account\Login.aspx" />
     <Content Include="Account\Perfil.aspx" />
     <Content Include="Account\Logout.aspx" />
+    <Content Include="Account\Recuperar.aspx" />
+    <Content Include="Account\Configurar.aspx" />
     <Content Include="admin\Usuarios.aspx" />
     <Content Include="admin\Preguntas.aspx" />
+    <Content Include="admin\Secciones.aspx" />
     <Content Include="Content\astemo-logo.png" />
     <Content Include="dashboard\Default.aspx" />
     <Content Include="formulario\Default.aspx" />
@@ -92,6 +95,15 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Account\BorrarNotificaciones.ashx.cs">
+      <DependentUpon>BorrarNotificaciones.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\MarcarTodasLeidas.ashx.cs">
+      <DependentUpon>MarcarTodasLeidas.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\MarcarLeida.ashx.cs">
+      <DependentUpon>MarcarLeida.ashx</DependentUpon>
+    </Compile>
     <Compile Include="Account\Login.aspx.cs">
       <DependentUpon>Login.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -113,6 +125,20 @@
     <Compile Include="Account\Logout.aspx.designer.cs">
       <DependentUpon>Logout.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Account\Recuperar.aspx.cs">
+      <DependentUpon>Recuperar.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\Recuperar.aspx.designer.cs">
+      <DependentUpon>Recuperar.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\Configurar.aspx.cs">
+      <DependentUpon>Configurar.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\Configurar.aspx.designer.cs">
+      <DependentUpon>Configurar.aspx</DependentUpon>
+    </Compile>
     <Compile Include="admin\Usuarios.aspx.cs">
       <DependentUpon>Usuarios.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -126,6 +152,13 @@
     </Compile>
     <Compile Include="admin\Preguntas.aspx.designer.cs">
       <DependentUpon>Preguntas.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="admin\Secciones.aspx.cs">
+      <DependentUpon>Secciones.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="admin\Secciones.aspx.designer.cs">
+      <DependentUpon>Secciones.aspx</DependentUpon>
     </Compile>
     <Compile Include="dashboard\Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
@@ -168,6 +201,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Account\MarcarLeida.ashx" />
+    <Content Include="Account\MarcarTodasLeidas.ashx" />
+    <Content Include="Account\BorrarNotificaciones.ashx" />
     <None Include="packages.config" />
     <Content Include="Site.Master" />
     <None Include="Web.Debug.config">
@@ -181,6 +217,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
     <Folder Include="Scripts\" />
+    <Folder Include="Uploads\Hallazgos\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Control\Control.csproj">

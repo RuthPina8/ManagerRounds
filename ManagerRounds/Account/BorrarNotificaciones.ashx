@@ -1,0 +1,1 @@
+﻿<%@ WebHandler Language="C#" CodeBehind="BorrarNotificaciones.ashx.cs" Class="ManagerRounds.Account.BorrarNotificaciones" %>

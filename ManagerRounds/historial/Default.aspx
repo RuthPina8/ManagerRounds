@@ -2,30 +2,106 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0">Historial</h4>
-    <div class="d-flex align-items-center" style="gap:8px;">
-        <asp:LinkButton ID="btnAnterior" runat="server" CssClass="btn btn-outline-secondary btn-sm" OnClick="btnAnterior_Click">‹</asp:LinkButton>
-        <div class="text-center">
-            <asp:Label ID="lblSemana" runat="server" CssClass="d-block font-weight-500" style="font-size:14px;" />
-            <asp:Label ID="lblRangoSemana" runat="server" CssClass="d-block text-muted" style="font-size:12px;" />
+<style>
+    .nav-tabs-custom { border-bottom: 2px solid #e8e8e8; margin-bottom: 20px; }
+    .nav-tabs-custom .nav-link {
+        border: none;
+        color: #888;
+        font-size: 13px;
+        font-weight: 500;
+        padding: 10px 18px;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -2px;
+        border-radius: 0;
+        background: transparent;
+    }
+    .nav-tabs-custom .nav-link:hover { color: #333; }
+    .nav-tabs-custom .nav-link.active { color: #CC0000; border-bottom: 2px solid #CC0000; }
+
+    .table-historial tr:hover td { background: #fff5f5; }
+    .semana-nav {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: #f8f8f8;
+        border: 1px solid #e8e8e8;
+        border-radius: 8px;
+        padding: 6px 12px;
+    }
+
+    .semana-nav .btn-nav {
+        width: 28px; height: 28px;
+        border-radius: 6px;
+        border: 1px solid #e0e0e0;
+        background: #fff;
+        color: #666;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.15s;
+    }
+
+    .semana-nav .btn-nav:hover { background: #f0f0f0; color: #333; }
+
+    .badge-check-hist {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .bitacora-dot {
+        width: 10px; height: 10px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        margin-top: 4px;
+    }
+
+    .bitacora-item {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        padding: 10px 0;
+        border-bottom: 1px solid #f5f5f5;
+    }
+
+    .bitacora-item:last-child { border-bottom: none; }
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 style="font-weight:600; margin:0;">Historial</h4>
+        <p style="font-size:13px; color:#888; margin:4px 0 0;">Consulta de revisiones y actividad del sistema</p>
+    </div>
+    <div class="semana-nav">
+        <asp:LinkButton ID="btnAnterior" runat="server" CssClass="btn-nav" OnClick="btnAnterior_Click">‹</asp:LinkButton>
+        <div class="text-center" style="min-width:140px;">
+            <asp:Label ID="lblSemana" runat="server" style="font-size:14px; font-weight:600; color:#222; display:block;" />
+            <asp:Label ID="lblRangoSemana" runat="server" style="font-size:11px; color:#888; display:block;" />
         </div>
-        <asp:LinkButton ID="btnSiguiente" runat="server" CssClass="btn btn-outline-secondary btn-sm" OnClick="btnSiguiente_Click">›</asp:LinkButton>
+        <asp:LinkButton ID="btnSiguiente" runat="server" CssClass="btn-nav" OnClick="btnSiguiente_Click">›</asp:LinkButton>
     </div>
 </div>
 
-<!-- Pestañas -->
-<ul class="nav nav-tabs mb-3">
-    <li class="nav-item">
-        <asp:LinkButton ID="tabRevisiones" runat="server" CssClass="nav-link active" OnClick="tabRevisiones_Click">Revisiones</asp:LinkButton>
-    </li>
-    <li class="nav-item">
-        <asp:LinkButton ID="tabBitacora" runat="server" CssClass="nav-link" OnClick="tabBitacora_Click">Bitácora</asp:LinkButton>
-    </li>
-</ul>
-
 <asp:HiddenField ID="hfTab" runat="server" Value="revisiones" />
 <asp:HiddenField ID="hfLunes" runat="server" />
+
+<!-- Pestañas -->
+<ul class="nav nav-tabs-custom">
+    <li class="nav-item">
+        <asp:LinkButton ID="tabRevisiones" runat="server" CssClass="nav-link active" OnClick="tabRevisiones_Click">
+            <i class="fas fa-clipboard-list mr-1"></i> Revisiones
+        </asp:LinkButton>
+    </li>
+    <li class="nav-item">
+        <asp:LinkButton ID="tabBitacora" runat="server" CssClass="nav-link" OnClick="tabBitacora_Click">
+            <i class="fas fa-history mr-1"></i> Bitácora
+        </asp:LinkButton>
+    </li>
+</ul>
 
 <!-- PANEL REVISIONES -->
 <asp:Panel ID="panelRevisiones" runat="server">
@@ -66,19 +142,29 @@
 
     <div class="card card-mr">
         <div class="card-body p-0">
-            <asp:GridView ID="gvRevisiones" runat="server" CssClass="table table-hover mb-0"
+            <asp:GridView ID="gvRevisiones" runat="server" CssClass="table table-historial mb-0"
                 AutoGenerateColumns="false" DataKeyNames="id"
                 OnRowCommand="gvRevisiones_RowCommand">
                 <Columns>
                     <asp:TemplateField HeaderText="Manager">
-                        <ItemTemplate><%# Eval("Usuarios.Nombre") %></ItemTemplate>
+                        <ItemTemplate>
+                            <span style="font-weight:500; font-size:13px;"><%# Eval("Usuarios.Nombre") %></span>
+                        </ItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="Sección">
-                        <ItemTemplate><%# Eval("ManagerSecciones.Seccion") %></ItemTemplate>
+                        <ItemTemplate>
+                            <span style="font-size:12px; color:#888;"><%# Eval("ManagerSecciones.Seccion") %></span>
+                        </ItemTemplate>
                     </asp:TemplateField>
-                    <asp:BoundField DataField="Check_id" HeaderText="Check" />
+                    <asp:TemplateField HeaderText="Check">
+                        <ItemTemplate>
+                            <span class='badge-check-hist badge-check-<%# Eval("Check_id").ToString().ToLower() %>'><%# Eval("Check_id") %></span>
+                        </ItemTemplate>
+                    </asp:TemplateField>
                     <asp:TemplateField HeaderText="Fecha y hora">
-                        <ItemTemplate><%# ((DateTime?)Eval("FechaInicio"))?.ToString("ddd dd MMM · hh:mm tt") %></ItemTemplate>
+                        <ItemTemplate>
+                            <span style="font-size:12px; color:#888;"><%# ((DateTime?)Eval("FechaInicio"))?.ToString("ddd dd MMM · hh:mm tt") %></span>
+                        </ItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="Calificación">
                         <ItemTemplate>
@@ -97,7 +183,7 @@
                     <asp:TemplateField HeaderText="Ver">
                         <ItemTemplate>
                             <asp:LinkButton runat="server" CommandName="Ver" CommandArgument='<%# Eval("id") %>'
-                                CssClass="btn btn-sm btn-outline-secondary">
+                                CssClass="btn-accion" title="Ver detalle">
                                 <i class="fas fa-eye"></i>
                             </asp:LinkButton>
                         </ItemTemplate>
@@ -114,11 +200,11 @@
         <div class="card-body">
             <asp:Repeater ID="rptBitacora" runat="server">
                 <ItemTemplate>
-                    <div class="d-flex mb-3" style="gap:12px; align-items:flex-start;">
-                        <div style="width:8px; height:8px; border-radius:50%; background:<%# Eval("Color") %>; margin-top:5px; flex-shrink:0;"></div>
+                    <div class="bitacora-item">
+                        <div class="bitacora-dot" style="background:<%# Eval("Color") %>;"></div>
                         <div>
-                            <p class="mb-0" style="font-size:13px;"><%# Eval("Descripcion") %></p>
-                            <p class="mb-0 text-muted" style="font-size:12px;"><%# Eval("Fecha") %></p>
+                            <p class="mb-0" style="font-size:13px; color:#333;"><%# Eval("Descripcion") %></p>
+                            <p class="mb-0" style="font-size:11px; color:#aaa; margin-top:2px;"><%# Eval("Fecha") %></p>
                         </div>
                     </div>
                 </ItemTemplate>
