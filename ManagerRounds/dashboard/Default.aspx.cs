@@ -20,7 +20,10 @@ namespace ManagerRounds.dashboard
                 DateTime lunes = GetLunesActual();
                 hfLunes.Value = lunes.ToString("yyyy-MM-dd");
                 CargarDashboard(lunes);
+                
+
             }
+
         }
 
         private DateTime GetLunesActual()

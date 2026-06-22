@@ -39,34 +39,32 @@
 <asp:Label ID="lblMensaje" runat="server" Visible="false" CssClass="alert d-block mb-3" />
 
 <!-- Info general -->
-<div class="card card-mr mb-3">
-    <div class="card-body">
-        <div class="row">
-            <div class="col-md-3">
-                <p class="text-muted mb-1" style="font-size:12px;">Manager</p>
-                <asp:Label ID="lblManager" runat="server" style="font-size:14px; font-weight:500;" />
-            </div>
-            <div class="col-md-3">
-                <p class="text-muted mb-1" style="font-size:12px;">Sección</p>
-                <asp:Label ID="lblSeccion" runat="server" style="font-size:14px;" />
-            </div>
-            <div class="col-md-2">
-                <p class="text-muted mb-1" style="font-size:12px;">Check</p>
-                <asp:Label ID="lblCheck" runat="server" style="font-size:14px;" />
-            </div>
-            <div class="col-md-2">
-                <p class="text-muted mb-1" style="font-size:12px;">Fecha</p>
-                <asp:Label ID="lblFecha" runat="server" style="font-size:14px;" />
-            </div>
-            <div class="col-md-1">
-                <p class="text-muted mb-1" style="font-size:12px;">Calificación</p>
-                <asp:Label ID="lblCalificacion" runat="server" style="font-size:14px; font-weight:500;" />
-                <asp:Label ID="lblHallazgosPendientes" runat="server" style="font-size:11px; color:#F0A500; display:block;" />
-            </div>
-            <div class="col-md-1">
-                <p class="text-muted mb-1" style="font-size:12px;">Estatus</p>
-                <asp:Label ID="lblEstatus" runat="server" />
-            </div>
+<div class="card card-mr mb-3" style="padding:0; overflow:hidden;">
+    <div style="display:grid; grid-template-columns:2fr 1.5fr 0.8fr 2fr 1fr 1fr;">
+        <div style="padding:16px 20px; border-right:1px solid #f0f0f0; background:#f8f8f8;">
+            <p style="font-size:11px; color:#aaa; margin:0 0 4px; text-transform:uppercase; letter-spacing:0.05em;">Manager</p>
+            <asp:Label ID="lblManager" runat="server" style="font-size:14px; font-weight:600; color:#222;" />
+        </div>
+        <div style="padding:16px 20px; border-right:1px solid #f0f0f0; background:#f8f8f8;">
+            <p style="font-size:11px; color:#aaa; margin:0 0 4px; text-transform:uppercase; letter-spacing:0.05em;">Sección</p>
+            <asp:Label ID="lblSeccion" runat="server" style="font-size:14px; color:#444;" />
+        </div>
+        <div style="padding:16px 20px; border-right:1px solid #f0f0f0; background:#f8f8f8;">
+            <p style="font-size:11px; color:#aaa; margin:0 0 4px; text-transform:uppercase; letter-spacing:0.05em;">Check</p>
+            <asp:Label ID="lblCheck" runat="server" style="font-size:14px; color:#444;" />
+        </div>
+        <div style="padding:16px 20px; border-right:1px solid #f0f0f0; background:#f8f8f8;">
+            <p style="font-size:11px; color:#aaa; margin:0 0 4px; text-transform:uppercase; letter-spacing:0.05em;">Fecha</p>
+            <asp:Label ID="lblFecha" runat="server" style="font-size:13px; color:#444;" />
+        </div>
+        <div style="padding:16px 20px; border-right:1px solid #f0f0f0; background:#f8f8f8;">
+            <p style="font-size:11px; color:#aaa; margin:0 0 4px; text-transform:uppercase; letter-spacing:0.05em;">Calificación</p>
+            <asp:Label ID="lblCalificacion" runat="server" style="font-size:14px; font-weight:600; color:#222;" />
+            <asp:Label ID="lblHallazgosPendientes" runat="server" style="font-size:11px; color:#F0A500; display:block;" />
+        </div>
+        <div style="padding:16px 20px; background:#f8f8f8;">
+            <p style="font-size:11px; color:#aaa; margin:0 0 4px; text-transform:uppercase; letter-spacing:0.05em;">Estatus</p>
+            <asp:Label ID="lblEstatus" runat="server" />
         </div>
     </div>
 </div>

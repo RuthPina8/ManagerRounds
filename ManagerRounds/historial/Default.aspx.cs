@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using iTextSharp.text.html.simpleparser;
 
 namespace ManagerRounds.historial
 {
@@ -18,12 +23,18 @@ namespace ManagerRounds.historial
                 hfLunes.Value = lunes.ToString("yyyy-MM-dd");
                 ActualizarNavegador(lunes);
 
-                // Aplicar filtro desde querystring si viene del dashboard
                 string filtro = Request.QueryString["filtro"];
                 if (!string.IsNullOrEmpty(filtro))
                     AplicarFiltroDashboard(filtro, lunes);
                 else
                     CargarRevisiones(lunes);
+
+                if (Session["rol"]?.ToString() == "Admin")
+                {
+                    pnlReporte.Visible = true;
+                    ddlMes.SelectedValue = DateTime.Today.Month.ToString();
+                    ddlAnio.SelectedValue = DateTime.Today.Year.ToString();
+                }
             }
         }
 
@@ -100,11 +111,10 @@ namespace ManagerRounds.historial
             string checkId = ddlFiltroCheck.SelectedValue;
             int? estatusId = string.IsNullOrEmpty(ddlFiltroEstatus.SelectedValue) ? (int?)null : int.Parse(ddlFiltroEstatus.SelectedValue);
 
-            var revisiones = Control.Control.GetRevisiones(lunes,
+            var revisiones = Control.Control.GetRevisiones(lunes, null,
                 string.IsNullOrEmpty(checkId) ? null : checkId,
                 estatusId);
 
-            // Manager solo ve sus revisiones
             if (rol == "Manager")
                 revisiones = revisiones.Where(r => r.Usuario_id == usuarioId).ToList();
 
@@ -121,7 +131,9 @@ namespace ManagerRounds.historial
 
         private void CargarBitacora(DateTime lunes)
         {
-            var revisiones = Control.Control.GetRevisiones(lunes);
+            DateTime inicioMes = new DateTime(lunes.Year, lunes.Month, 1);
+            DateTime finMes = inicioMes.AddMonths(1).AddDays(-1);
+            var revisiones = Control.Control.GetRevisiones(inicioMes, finMes);
             var entradas = new List<object>();
 
             foreach (var r in revisiones)
@@ -158,7 +170,6 @@ namespace ManagerRounds.historial
             rptBitacora.DataSource = entradas;
             rptBitacora.DataBind();
         }
-
         protected void btnAnterior_Click(object sender, EventArgs e)
         {
             DateTime lunes = DateTime.Parse(hfLunes.Value).AddDays(-7);
@@ -233,6 +244,141 @@ namespace ManagerRounds.historial
                 case "Corregido": return "badge badge-corregido";
                 default: return "badge badge-secondary";
             }
+        }
+
+        protected void btnDescargarExcel_Click(object sender, EventArgs e)
+        {
+            int mes = int.Parse(ddlMes.SelectedValue);
+            int anio = int.Parse(ddlAnio.SelectedValue);
+            DateTime inicio = new DateTime(anio, mes, 1);
+            DateTime fin = inicio.AddMonths(1).AddDays(-1);
+
+            var db = new Datos.DataClasses1DataContext();
+            var managers = db.Usuarios
+                .Where(u => u.Activo == true && u.Roles.Rol == "Manager")
+                .ToList();
+
+            using (var pck = new ExcelPackage())
+            {
+                var ws = pck.Workbook.Worksheets.Add("Reporte");
+
+                ws.Cells[1, 1].Value = "Reporte Manager Rounds — Astemo MXQRP1";
+                ws.Cells[1, 1].Style.Font.Bold = true;
+                ws.Cells[1, 1].Style.Font.Size = 14;
+                ws.Cells[2, 1].Value = inicio.ToString("MMMM yyyy");
+                ws.Cells[3, 1].Value = $"Generado: {DateTime.Now:dd/MM/yyyy HH:mm}";
+
+                string[] headers = { "Manager", "Sección", "Formularios completados", "Entregados tarde", "Calificación promedio", "Hallazgos abiertos", "Hallazgos cerrados" };
+                for (int i = 0; i < headers.Length; i++)
+                {
+                    ws.Cells[5, i + 1].Value = headers[i];
+                    ws.Cells[5, i + 1].Style.Font.Bold = true;
+                    ws.Cells[5, i + 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    ws.Cells[5, i + 1].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.FromArgb(204, 0, 0));
+                    ws.Cells[5, i + 1].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                }
+
+                int row = 6;
+                foreach (var m in managers)
+                {
+                    var seccion = db.ManagerSecciones.FirstOrDefault(s => s.Usuario_id == m.id && s.Activo == true);
+                    var revisiones = db.Revisiones
+                        .Where(r => r.Usuario_id == m.id && r.Fecha >= inicio && r.Fecha <= fin)
+                        .ToList();
+
+                    int completados = revisiones.Count(r => r.Estatus_id != 3);
+                    int tarde = revisiones.Count(r => r.EntregadoTarde == true);
+                    decimal? promedio = revisiones.Any(r => r.Calificacion != null)
+                        ? Math.Round(revisiones.Where(r => r.Calificacion != null).Average(r => r.Calificacion.Value), 1)
+                        : (decimal?)null;
+
+                    var respuestas = db.RespuestasRevision
+                        .Where(r => r.Revisiones.Usuario_id == m.id
+                            && r.TiposRespuesta.Respuesta == "Falla"
+                            && r.Revisiones.Fecha >= inicio
+                            && r.Revisiones.Fecha <= fin)
+                        .ToList();
+
+                    ws.Cells[row, 1].Value = m.Nombre;
+                    ws.Cells[row, 2].Value = seccion?.Seccion ?? "—";
+                    ws.Cells[row, 3].Value = completados;
+                    ws.Cells[row, 4].Value = tarde;
+                    ws.Cells[row, 5].Value = promedio.HasValue ? promedio + "%" : "—";
+                    ws.Cells[row, 6].Value = respuestas.Count(r => r.HallazgoCerrado == false);
+                    ws.Cells[row, 7].Value = respuestas.Count(r => r.HallazgoCerrado == true);
+                    row++;
+                }
+
+                ws.Cells[ws.Dimension.Address].AutoFitColumns();
+
+                Response.Clear();
+                Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                Response.AddHeader("content-disposition", $"attachment;filename=ManagerRounds_{inicio:MMMM_yyyy}.xlsx");
+                Response.BinaryWrite(pck.GetAsByteArray());
+                Session[$"reporteDescargado_{inicio.Year}_{inicio.Month}"] = true;
+                Response.End();
+            }
+        }
+
+        protected void btnDescargarPdf_Click(object sender, EventArgs e)
+        {
+            int mes = int.Parse(ddlMes.SelectedValue);
+            int anio = int.Parse(ddlAnio.SelectedValue);
+            DateTime inicio = new DateTime(anio, mes, 1);
+            DateTime fin = inicio.AddMonths(1).AddDays(-1);
+
+            var db = new Datos.DataClasses1DataContext();
+            var managers = db.Usuarios
+                .Where(u => u.Activo == true && u.Roles.Rol == "Manager")
+                .ToList();
+
+            var sb = new System.Text.StringBuilder();
+            sb.Append("<html><head><style>body{font-family:Arial;font-size:11px;}h1{color:#CC0000;font-size:16px;}h2{font-size:12px;color:#666;}table{width:100%;border-collapse:collapse;margin-top:16px;}th{background:#CC0000;color:white;padding:6px;text-align:left;}td{padding:5px 6px;border-bottom:1px solid #eee;}tr:nth-child(even){background:#f9f9f9;}</style></head><body>");
+            sb.Append($"<h1>Reporte Manager Rounds — Astemo MXQRP1</h1>");
+            sb.Append($"<h2>{inicio:MMMM yyyy} &nbsp;·&nbsp; Generado: {DateTime.Now:dd/MM/yyyy HH:mm}</h2>");
+            sb.Append("<table><tr><th>Manager</th><th>Sección</th><th>Completados</th><th>Tarde</th><th>Cal. promedio</th><th>Hallazgos abiertos</th><th>Hallazgos cerrados</th></tr>");
+
+            foreach (var m in managers)
+            {
+                var seccion = db.ManagerSecciones.FirstOrDefault(s => s.Usuario_id == m.id && s.Activo == true);
+                var revisiones = db.Revisiones
+                    .Where(r => r.Usuario_id == m.id && r.Fecha >= inicio && r.Fecha <= fin)
+                    .ToList();
+
+                int completados = revisiones.Count(r => r.Estatus_id != 3);
+                int tarde = revisiones.Count(r => r.EntregadoTarde == true);
+                decimal? promedio = revisiones.Any(r => r.Calificacion != null)
+                    ? Math.Round(revisiones.Where(r => r.Calificacion != null).Average(r => r.Calificacion.Value), 1)
+                    : (decimal?)null;
+
+                var respuestas = db.RespuestasRevision
+                    .Where(r => r.Revisiones.Usuario_id == m.id
+                        && r.TiposRespuesta.Respuesta == "Falla"
+                        && r.Revisiones.Fecha >= inicio
+                        && r.Revisiones.Fecha <= fin)
+                    .ToList();
+
+                sb.Append($"<tr><td>{m.Nombre}</td><td>{seccion?.Seccion ?? "—"}</td><td>{completados}</td><td>{tarde}</td><td>{(promedio.HasValue ? promedio + "%" : "—")}</td><td>{respuestas.Count(r => r.HallazgoCerrado == false)}</td><td>{respuestas.Count(r => r.HallazgoCerrado == true)}</td></tr>");
+            }
+
+            sb.Append("</table></body></html>");
+
+            Response.Clear();
+            Response.ContentType = "application/pdf";
+            Response.AddHeader("content-disposition", $"attachment;filename=ManagerRounds_{inicio:MMMM_yyyy}.pdf");
+
+            using (var ms = new System.IO.MemoryStream())
+            {
+                var doc = new Document(PageSize.A4.Rotate(), 20, 20, 20, 20);
+                PdfWriter.GetInstance(doc, ms);
+                doc.Open();
+                var html = HTMLWorker.ParseToList(new System.IO.StringReader(sb.ToString()), null);
+                foreach (var element in html)
+                    doc.Add(element);
+                doc.Close();
+                Response.BinaryWrite(ms.ToArray());
+            }
+            Response.End();
         }
     }
 }

@@ -327,11 +327,11 @@ namespace Control
             return db.Preguntas.Any(p => p.Check_id == checkId && p.Activo == true);
         }
 
-        public static List<Datos.Revisiones> GetRevisiones(DateTime lunes, string checkId = null, int? estatusId = null)
+        public static List<Datos.Revisiones> GetRevisiones(DateTime inicio, DateTime? fin = null, string checkId = null, int? estatusId = null)
         {
             Datos.DataClasses1DataContext db = new Datos.DataClasses1DataContext();
-            DateTime viernes = lunes.AddDays(4);
-            var query = db.Revisiones.Where(r => r.Fecha >= lunes && r.Fecha <= viernes);
+            DateTime fechaFin = fin ?? inicio.AddDays(4);
+            var query = db.Revisiones.Where(r => r.Fecha >= inicio && r.Fecha <= fechaFin);
             if (!string.IsNullOrEmpty(checkId))
                 query = query.Where(r => r.Check_id == checkId);
             if (estatusId.HasValue)

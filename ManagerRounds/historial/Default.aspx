@@ -17,7 +17,6 @@
     }
     .nav-tabs-custom .nav-link:hover { color: #333; }
     .nav-tabs-custom .nav-link.active { color: #CC0000; border-bottom: 2px solid #CC0000; }
-
     .table-historial tr:hover td { background: #fff5f5; }
     .semana-nav {
         display: flex;
@@ -28,7 +27,6 @@
         border-radius: 8px;
         padding: 6px 12px;
     }
-
     .semana-nav .btn-nav {
         width: 28px; height: 28px;
         border-radius: 6px;
@@ -42,32 +40,10 @@
         justify-content: center;
         transition: all 0.15s;
     }
-
     .semana-nav .btn-nav:hover { background: #f0f0f0; color: #333; }
-
-    .badge-check-hist {
-        display: inline-block;
-        padding: 2px 8px;
-        border-radius: 20px;
-        font-size: 11px;
-        font-weight: 600;
-    }
-
-    .bitacora-dot {
-        width: 10px; height: 10px;
-        border-radius: 50%;
-        flex-shrink: 0;
-        margin-top: 4px;
-    }
-
-    .bitacora-item {
-        display: flex;
-        gap: 12px;
-        align-items: flex-start;
-        padding: 10px 0;
-        border-bottom: 1px solid #f5f5f5;
-    }
-
+    .badge-check-hist { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+    .bitacora-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+    .bitacora-item { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid #f5f5f5; }
     .bitacora-item:last-child { border-bottom: none; }
 </style>
 
@@ -76,13 +52,41 @@
         <h4 style="font-weight:600; margin:0;">Historial</h4>
         <p style="font-size:13px; color:#888; margin:4px 0 0;">Consulta de revisiones y actividad del sistema</p>
     </div>
-    <div class="semana-nav">
-        <asp:LinkButton ID="btnAnterior" runat="server" CssClass="btn-nav" OnClick="btnAnterior_Click">‹</asp:LinkButton>
-        <div class="text-center" style="min-width:140px;">
-            <asp:Label ID="lblSemana" runat="server" style="font-size:14px; font-weight:600; color:#222; display:block;" />
-            <asp:Label ID="lblRangoSemana" runat="server" style="font-size:11px; color:#888; display:block;" />
+    <div style="display:flex; align-items:center; gap:10px;">
+        <asp:Panel ID="pnlReporte" runat="server" Visible="false">
+            <div style="display:flex; align-items:center; gap:6px; background:#f8f8f8; border:1px solid #e8e8e8; border-radius:8px; padding:6px 10px;">
+                <i class="fas fa-file-alt" style="color:#888; font-size:13px;"></i>
+                <asp:DropDownList ID="ddlMes" runat="server" CssClass="form-control form-control-sm" style="width:100px; border:none; background:transparent; font-size:12px;">
+                    <asp:ListItem Value="1">Enero</asp:ListItem>
+                    <asp:ListItem Value="2">Febrero</asp:ListItem>
+                    <asp:ListItem Value="3">Marzo</asp:ListItem>
+                    <asp:ListItem Value="4">Abril</asp:ListItem>
+                    <asp:ListItem Value="5">Mayo</asp:ListItem>
+                    <asp:ListItem Value="6">Junio</asp:ListItem>
+                    <asp:ListItem Value="7">Julio</asp:ListItem>
+                    <asp:ListItem Value="8">Agosto</asp:ListItem>
+                    <asp:ListItem Value="9">Septiembre</asp:ListItem>
+                    <asp:ListItem Value="10">Octubre</asp:ListItem>
+                    <asp:ListItem Value="11">Noviembre</asp:ListItem>
+                    <asp:ListItem Value="12">Diciembre</asp:ListItem>
+                </asp:DropDownList>
+                <asp:DropDownList ID="ddlAnio" runat="server" CssClass="form-control form-control-sm" style="width:70px; border:none; background:transparent; font-size:12px;">
+                    <asp:ListItem Value="2025">2025</asp:ListItem>
+                    <asp:ListItem Value="2026">2026</asp:ListItem>
+                    <asp:ListItem Value="2027">2027</asp:ListItem>
+                </asp:DropDownList>
+                <asp:Button ID="btnDescargarExcel" runat="server" Text="↓ Excel" CssClass="btn btn-sm" style="background:#217346; color:#fff; font-size:12px; padding:4px 10px;" OnClick="btnDescargarExcel_Click" />
+                <asp:Button ID="btnDescargarPdf" runat="server" Text="↓ PDF" CssClass="btn btn-sm" style="background:#CC0000; color:#fff; font-size:12px; padding:4px 10px;" OnClick="btnDescargarPdf_Click" />
+            </div>
+        </asp:Panel>
+        <div class="semana-nav">
+            <asp:LinkButton ID="btnAnterior" runat="server" CssClass="btn-nav" OnClick="btnAnterior_Click">‹</asp:LinkButton>
+            <div class="text-center" style="min-width:140px;">
+                <asp:Label ID="lblSemana" runat="server" style="font-size:14px; font-weight:600; color:#222; display:block;" />
+                <asp:Label ID="lblRangoSemana" runat="server" style="font-size:11px; color:#888; display:block;" />
+            </div>
+            <asp:LinkButton ID="btnSiguiente" runat="server" CssClass="btn-nav" OnClick="btnSiguiente_Click">›</asp:LinkButton>
         </div>
-        <asp:LinkButton ID="btnSiguiente" runat="server" CssClass="btn-nav" OnClick="btnSiguiente_Click">›</asp:LinkButton>
     </div>
 </div>
 
@@ -182,16 +186,16 @@
                         </ItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="Acciones">
-    <ItemTemplate>
-        <asp:LinkButton runat="server" CommandName="Ver" CommandArgument='<%# Eval("id") %>'
-            CssClass="btn-accion" title="Ver detalle">
-            <i class="fas fa-eye"></i>
-        </asp:LinkButton>
-        <%# Eval("EstatusRevision.Estatus").ToString() == "Pendiente" ? 
-            "<a href='/formulario/Default.aspx?editar=" + Eval("Check_id") + "&revid=" + Eval("id") + "' class='btn-accion ml-1' title='Editar'><i class='fas fa-edit'></i></a>" 
-            : "" %>
-    </ItemTemplate>
-</asp:TemplateField>
+                        <ItemTemplate>
+                            <asp:LinkButton runat="server" CommandName="Ver" CommandArgument='<%# Eval("id") %>'
+                                CssClass="btn-accion" title="Ver detalle">
+                                <i class="fas fa-eye"></i>
+                            </asp:LinkButton>
+                            <%# Session["rol"].ToString() == "Manager" && Eval("EstatusRevision.Estatus").ToString() == "Pendiente" ? 
+                                "<a href='/formulario/Default.aspx?editar=" + Eval("Check_id") + "&revid=" + Eval("id") + "' class='btn-accion ml-1' title='Editar'><i class='fas fa-edit'></i></a>" 
+                                : "" %>
+                        </ItemTemplate>
+                    </asp:TemplateField>
                 </Columns>
             </asp:GridView>
         </div>
